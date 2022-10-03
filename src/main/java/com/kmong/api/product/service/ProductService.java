@@ -1,6 +1,11 @@
 package com.kmong.api.product.service;
 
+import com.kmong.api.order.domain.OrderProduct;
+import com.kmong.api.order.request.OrderedProduct;
+import com.kmong.api.product.domain.Product;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface ProductService {
 
@@ -10,6 +15,13 @@ public interface ProductService {
      * @return 검색결과
      */
     ResponseEntity findById(Long id);
+
+    /**
+     * 아이디 리스트로 상품 리스트 검색
+     * @param productIds 검색할 상품 아이디 리스트
+     * @return 검색한 상품 리스트
+     */
+    List<Product> findByIds(List<Long> productIds);
 
     /**
      * 상품명으로 상품 검색(like 검색)
