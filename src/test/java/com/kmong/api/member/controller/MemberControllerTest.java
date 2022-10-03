@@ -16,11 +16,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import com.kmong.api.member.request.MemberSearch;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@Transactional
 public class MemberControllerTest {
 
     @Autowired
@@ -37,12 +40,6 @@ public class MemberControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-    }
-
-    @BeforeEach
-    @AfterEach
-    void clearAll() {
-        memberRepository.deleteAll();
     }
 
     @Test

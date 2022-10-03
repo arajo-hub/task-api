@@ -13,17 +13,17 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/product/list/{id}")
     public ResponseEntity findById(@PathVariable Long id) {
         return productService.findById(id);
     }
 
-    @GetMapping("/product/name")
+    @GetMapping("/product/list/name")
     public ResponseEntity findByProductName(String productName) {
         return productService.findByProductName(productName);
     }
 
-    @GetMapping("/product/salesyn")
+    @GetMapping("/product/list/salesyn")
     public ResponseEntity findBySalesYn(String salesYn) {
         Boolean sales = "Y".equalsIgnoreCase(salesYn) ? Boolean.TRUE
                                                         : "N".equalsIgnoreCase(salesYn) ? Boolean.FALSE : null;

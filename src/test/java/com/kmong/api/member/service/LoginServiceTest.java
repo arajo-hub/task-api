@@ -13,9 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
+@Transactional
 public class LoginServiceTest {
 
     @Autowired
@@ -23,12 +26,6 @@ public class LoginServiceTest {
 
     @Autowired
     private LoginService loginService;
-
-    @BeforeEach
-    @AfterEach
-    void clearAll() {
-        memberRepository.deleteAll();
-    }
 
     @Test
     @DisplayName("로그인 성공")
