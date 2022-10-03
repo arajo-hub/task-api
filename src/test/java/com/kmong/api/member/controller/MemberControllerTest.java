@@ -2,6 +2,7 @@ package com.kmong.api.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kmong.api.config.encrypt.PwdEncryption;
 import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.domain.Member;
 import com.kmong.api.member.request.MemberCreate;
@@ -65,7 +66,7 @@ public class MemberControllerTest {
 
         assertEquals(memberCreate.getId(), member.getId());
         assertEquals(memberCreate.getEmail(), member.getEmail());
-        assertEquals(memberCreate.getEncryptedPwd(), member.getPwd());
+        assertEquals(PwdEncryption.encrypt(memberCreate.getPwd()), member.getPwd());
     }
 
     @Test

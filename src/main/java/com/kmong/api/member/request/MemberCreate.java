@@ -13,21 +13,19 @@ public class MemberCreate {
     private String id;
     private String email;
     private String pwd;
-    private String encryptedPwd;
 
     @Builder
     public MemberCreate(String id, String email, String pwd) {
         this.id = id;
         this.email = email;
         this.pwd = pwd;
-        this.encryptedPwd = PwdEncryption.encrypt(pwd);
     }
 
     public Member toMember() {
         return Member.builder()
                     .id(id)
                     .email(email)
-                    .pwd(encryptedPwd)
+                    .pwd(PwdEncryption.encrypt(pwd))
                     .build();
     }
 }
