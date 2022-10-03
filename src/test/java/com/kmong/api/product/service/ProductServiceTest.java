@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,13 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
+@Transactional
 public class ProductServiceTest {
 
     @Autowired
@@ -25,14 +30,6 @@ public class ProductServiceTest {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @BeforeEach
-    void clearAll() {
-        productRepository.deleteAll();
-    }
 
     @Test
     @DisplayName("상품 아이디로 조회")
@@ -46,10 +43,12 @@ public class ProductServiceTest {
         productRepository.save(savedProduct);
 
         ResponseEntity response = productService.findById(savedProduct.getId());
-        Product searchedProduct = objectMapper.readValue(response.getBody().toString(), Product.class);
+
+        Optional<Product> searchedProduct = (Optional<Product>) response.getBody();
+        Product product = searchedProduct.isPresent() ? searchedProduct.get() : null;
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(savedProduct, searchedProduct);
+        assertTrue(!ObjectUtils.isEmpty(product));
     }
 
     @Test
