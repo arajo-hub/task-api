@@ -1,11 +1,17 @@
 package com.kmong.api.product.service.impl;
 
+import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
 import com.kmong.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +27,27 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity findById(Long id) {
         return new ResponseEntity(productRepository.findById(id), HttpStatus.OK);
+    }
+
+    /**
+     * 아이디 리스트로 상품 리스트 검색
+     * @param productIds 검색할 상품 아이디 리스트
+     * @return 검색한 상품 리스트
+     */
+    @Override
+    public List<Product> findByIds(List<Long> productIds) {
+        List<Product> products = new ArrayList<Product>();
+        for (Long productId : productIds) {
+            if (!ObjectUtils.isEmpty(productId)) {
+                Optional<Product> productFindById = productRepository.findById(productId);
+                if (productFindById.isPresent()) {
+                    products.add(productFindById.get());
+                }
+            } else {
+                products = null;
+            }
+        }
+        return products;
     }
 
     /**
