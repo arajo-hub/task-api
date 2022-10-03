@@ -1,8 +1,10 @@
 package com.kmong.api.member.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.domain.Member;
+import com.kmong.api.member.request.MemberCreate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,9 @@ import com.kmong.api.member.request.MemberSearch;
 
 import javax.transaction.Transactional;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,6 +45,27 @@ public class MemberControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
+
+    @Test
+    @DisplayName("회원가입")
+    void join() throws Exception {
+        MemberCreate memberCreate = MemberCreate.builder()
+                                                .id("test1234")
+                                                .email("test1234@kmong.co.kr")
+                                                .pwd("test1234")
+                                                .build();
+        mockMvc.perform(post("/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberCreate)))
+                        .andExpect(status().isOk());
+
+        Optional<Member> memberFindById = memberRepository.findById(memberCreate.getId());
+        Member member = memberFindById.isPresent() ? memberFindById.get() : null;
+
+        assertEquals(memberCreate.getId(), member.getId());
+        assertEquals(memberCreate.getEmail(), member.getEmail());
+        assertEquals(memberCreate.getEncryptedPwd(), member.getPwd());
     }
 
     @Test
