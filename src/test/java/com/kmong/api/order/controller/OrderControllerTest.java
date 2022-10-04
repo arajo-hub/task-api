@@ -9,6 +9,7 @@ import com.kmong.api.order.domain.OrderProduct;
 import com.kmong.api.order.repository.OrderRepository;
 import com.kmong.api.order.request.OrderCreate;
 import com.kmong.api.order.request.OrderedProduct;
+import com.kmong.api.order.response.OrderView;
 import com.kmong.api.order.service.OrderService;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
@@ -101,11 +102,11 @@ public class OrderControllerTest {
 
         for (int i = 0; i < tryTime; i++) {
             List<OrderedProduct> products = List.of(OrderedProduct.builder()
-                            .id(1L)
+                            .id(testProducts.get(0).getId())
                             .quantity(1)
                             .build(),
                     OrderedProduct.builder()
-                            .id(2L)
+                            .id(testProducts.get(1).getId())
                             .quantity(10)
                             .build());
             OrderCreate orderCreate = OrderCreate.builder().memberId(testMember.getId()).orderedProducts(products).build();
@@ -125,7 +126,7 @@ public class OrderControllerTest {
                 .andReturn();
 
         String jsonContent = result.getResponse().getContentAsString();
-        List<Order> orders = objectMapper.readValue(jsonContent, new TypeReference<List<Order>>() {});
+        List<OrderView> orders = objectMapper.readValue(jsonContent, new TypeReference<List<OrderView>>() {});
 
         assertEquals(tryTime, orders.size());
     }

@@ -8,6 +8,7 @@ import com.kmong.api.order.domain.OrderProduct;
 import com.kmong.api.order.repository.OrderRepository;
 import com.kmong.api.order.request.OrderCreate;
 import com.kmong.api.order.request.OrderedProduct;
+import com.kmong.api.order.response.OrderView;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -36,6 +38,9 @@ public class OrderServiceTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     private static Member testMember;
 
@@ -97,23 +102,22 @@ public class OrderServiceTest {
 
         for (int i = 0; i < tryTime; i++) {
             List<OrderedProduct> products = List.of(OrderedProduct.builder()
-                                                                    .id(1L)
+                                                                    .id(testProducts.get(0).getId())
                                                                     .quantity(1)
                                                                     .build(),
                                                     OrderedProduct.builder()
-                                                                    .id(2L)
+                                                                    .id(testProducts.get(1).getId())
                                                                     .quantity(10)
                                                                     .build());
             OrderCreate orderCreate = OrderCreate.builder()
                     .memberId(testMember.getId())
                     .orderedProducts(products).build();
-
             ResponseEntity response = orderService.createOrder(orderCreate);
             assertEquals(HttpStatus.OK, response.getStatusCode());
         }
 
         ResponseEntity result = orderService.findAllOrder(testMember.getId());
-        List<Order> savedOrders = (List<Order>) result.getBody();
+        List<OrderView> savedOrders = (List<OrderView>) result.getBody();
 
         assertEquals(tryTime, savedOrders.size());
     }

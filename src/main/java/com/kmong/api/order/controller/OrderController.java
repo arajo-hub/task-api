@@ -19,7 +19,6 @@ public class OrderController {
 
     @PostMapping("/order/create")
     public ResponseEntity createOrder(@RequestBody OrderCreate orderCreate) {
-        log.info(orderCreate.toString());
         return orderService.createOrder(orderCreate);
     }
 
