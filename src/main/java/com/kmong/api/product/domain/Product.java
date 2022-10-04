@@ -1,5 +1,6 @@
 package com.kmong.api.product.domain;
 
+import com.kmong.api.product.response.ProductView;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,5 +30,15 @@ public class Product {
         this.quantity = quantity;
         this.price = price;
         this.salesYn = salesYn;
+    }
+
+    public ProductView toProductView() {
+        return ProductView.builder()
+                .id(id)
+                .productName(productName)
+                .quantity(quantity)
+                .price(price)
+                .salesYn(salesYn)
+                .build();
     }
 }
