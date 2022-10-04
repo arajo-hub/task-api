@@ -1,5 +1,6 @@
 package com.kmong.api.order.domain;
 
+import com.kmong.api.order.response.OrderProductView;
 import com.kmong.api.product.domain.Product;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,8 @@ public class OrderProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
+    private String orderProductName;
     @OneToOne
     private Product product;
     @Column
@@ -23,9 +26,19 @@ public class OrderProduct {
     private int price;
 
     @Builder
-    public OrderProduct(Product product, int quantity, int price) {
+    public OrderProduct(String orderProductName, Product product, int quantity, int price) {
+        this.orderProductName = orderProductName;
         this.product = product;
         this.quantity = quantity;
         this.price = price;
+    }
+
+    public OrderProductView toOrderProductView() {
+        return OrderProductView.builder()
+                                .id(id)
+                                .orderProductName(orderProductName)
+                                .quantity(quantity)
+                                .price(price)
+                                .build();
     }
 }

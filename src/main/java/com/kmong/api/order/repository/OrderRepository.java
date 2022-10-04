@@ -51,7 +51,6 @@ public class OrderRepository {
      * @return 주문내역 리스트
      */
     public List<Order> findAllOrder(String id) {
-        log.info("주문수" + countOrder());
         return queryFactory.selectFrom(order)
                 .where(isEqualsToMemberId(id))
                 .orderBy(order.id.asc())

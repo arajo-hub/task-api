@@ -6,6 +6,7 @@ import com.kmong.api.order.domain.Order;
 import com.kmong.api.order.domain.OrderProduct;
 import com.kmong.api.order.repository.OrderRepository;
 import com.kmong.api.order.request.OrderCreate;
+import com.kmong.api.order.response.OrderView;
 import com.kmong.api.order.service.OrderService;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.service.ProductService;
@@ -38,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
      * @return 주문 생성 결과
      */
     @Override
-    public ResponseEntity createOrder(OrderCreate orderCreate) {
+    public ResponseEntity<OrderView> createOrder(OrderCreate orderCreate) {
         ResponseEntity response = new ResponseEntity(HttpStatus.OK);
         Optional<Member> memberFindById = memberService.findById(orderCreate.getMemberId());
         if (memberFindById.isPresent()) {
@@ -51,6 +52,7 @@ public class OrderServiceImpl implements OrderService {
                 Optional<Integer> orderQuantity = orderCreate.getOrderedProducts().stream().filter(p -> product.getId().equals(p.getId())).map(p -> p.getQuantity()).findFirst();
                 if (orderQuantity.isPresent()) {
                     orderProducts.add(OrderProduct.builder()
+                                                    .orderProductName(product.getProductName())
                                                     .product(product)
                                                     .quantity(orderQuantity.get())
                                                     .price(product.getPrice())
@@ -59,8 +61,12 @@ public class OrderServiceImpl implements OrderService {
                     response = new ResponseEntity(HttpStatus.BAD_REQUEST);
                 }
             }
-            Order order = orderCreate.toOrder(memberFindById.get(), orderProducts);
-            orderRepository.createOrder(order);
+
+            if (HttpStatus.OK.equals(response.getStatusCode()) && !orderProducts.isEmpty()) {
+                Order order = orderCreate.toOrder(memberFindById.get(), orderProducts);
+                orderRepository.createOrder(order);
+                response = new ResponseEntity(order.toOrderView(), HttpStatus.OK);
+            }
         } else {
             response = new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -73,12 +79,15 @@ public class OrderServiceImpl implements OrderService {
      * @return 주문내역 리스트
      */
     @Override
-    public ResponseEntity findAllOrder(String id) {
+    public ResponseEntity<List<OrderView>> findAllOrder(String id) {
         List<Order> orders = new ArrayList<Order>();
+        List<OrderView> orderViews = new ArrayList<OrderView>();
         if (!StringUtils.isNullOrEmpty(id)) {
             orders = orderRepository.findAllOrder(id);
+            for (Order order : orders) {
+                orderViews.add(order.toOrderView());
+            }
         }
-        log.info("주문수" + orders.size());
-        return new ResponseEntity(orders, HttpStatus.OK);
+        return new ResponseEntity(orderViews, HttpStatus.OK);
     }
 }
