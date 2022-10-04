@@ -3,6 +3,7 @@ package com.kmong.api.member.service.impl;
 import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.domain.Member;
 import com.kmong.api.member.request.MemberSearch;
+import com.kmong.api.member.response.MemberView;
 import com.kmong.api.member.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +28,14 @@ public class LoginServiceImpl implements LoginService {
      * @return 로그인결과
      */
     @Override
-    public ResponseEntity login(HttpSession httpSession, MemberSearch memberSearch) {
+    public ResponseEntity<MemberView> login(HttpSession httpSession, MemberSearch memberSearch) {
         ResponseEntity response = new ResponseEntity(HttpStatus.OK);
         Optional<Member> memberFromDB = memberRepository.findById(memberSearch.getId());
         if (memberFromDB.isPresent()) {
             Member memberFindById = memberFromDB.get();
-            log.info(memberFindById.getPwd());
-            log.info(memberFromDB.get().getPwd());
             if (memberFindById.getPwd().equals(memberSearch.getPwd())) {
                 httpSession.setAttribute("id", memberFindById.getId());
+                response = new ResponseEntity(memberFindById.toMemberView(), HttpStatus.OK);
             } else {
                 // 비밀번호가 다른 경우
                 response = new ResponseEntity(HttpStatus.BAD_REQUEST);

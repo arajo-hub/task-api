@@ -1,5 +1,6 @@
 package com.kmong.api.member.domain;
 
+import com.kmong.api.member.response.MemberView;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,12 @@ public class Member {
         this.email = email;
         this.pwd = pwd;
         this.sessionId = sessionId;
+    }
+
+    public MemberView toMemberView() {
+        return MemberView.builder()
+                            .id(id)
+                            .email(email)
+                            .build();
     }
 }
