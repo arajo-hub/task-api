@@ -51,6 +51,6 @@ public class Order {
     }
 
     private int calculateTotalPrice() {
-        return orderProducts.stream().mapToInt(op -> op.getPrice()).sum();
+        return orderProducts.stream().mapToInt(op -> op.getPrice() * op.getQuantity()).sum();
     }
 }
