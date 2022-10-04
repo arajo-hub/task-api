@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
+import com.kmong.api.product.response.ProductView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,11 +45,9 @@ public class ProductServiceTest {
 
         ResponseEntity response = productService.findById(savedProduct.getId());
 
-        Optional<Product> searchedProduct = (Optional<Product>) response.getBody();
-        Product product = searchedProduct.isPresent() ? searchedProduct.get() : null;
-
+        ProductView searchedProduct = (ProductView) response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(!ObjectUtils.isEmpty(product));
+        assertTrue(!ObjectUtils.isEmpty(searchedProduct));
     }
 
     @Test
@@ -57,7 +56,7 @@ public class ProductServiceTest {
         ResponseEntity response = productService.findById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(Optional.empty(), response.getBody());
+        assertEquals(null, response.getBody());
     }
 
     @Test

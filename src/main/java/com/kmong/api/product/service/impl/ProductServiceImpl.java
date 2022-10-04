@@ -2,6 +2,7 @@ package com.kmong.api.product.service.impl;
 
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
+import com.kmong.api.product.response.ProductView;
 import com.kmong.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +27,10 @@ public class ProductServiceImpl implements ProductService {
      * @return 검색결과
      */
     @Override
-    public ResponseEntity findById(Long id) {
-        return new ResponseEntity(productRepository.findById(id), HttpStatus.OK);
+    public ResponseEntity<ProductView> findById(Long id) {
+        Optional<Product> productFindById = productRepository.findById(id);
+        ProductView productView = productFindById.isPresent() ? productFindById.get().toProductView() : null;
+        return new ResponseEntity(productView, HttpStatus.OK);
     }
 
     /**
@@ -56,8 +60,10 @@ public class ProductServiceImpl implements ProductService {
      * @return 검색결과
      */
     @Override
-    public ResponseEntity findByProductName(String keyword) {
-        return new ResponseEntity(productRepository.findByProductName(keyword), HttpStatus.OK);
+    public ResponseEntity<ProductView> findByProductName(String keyword) {
+        List<Product> productFindByProductName = productRepository.findByProductName(keyword);
+        List<ProductView> productViews = productFindByProductName.stream().map(p -> p.toProductView()).collect(Collectors.toList());
+        return new ResponseEntity(productViews, HttpStatus.OK);
     }
 
     /**
@@ -66,8 +72,10 @@ public class ProductServiceImpl implements ProductService {
      * @return 검색결과
      */
     @Override
-    public ResponseEntity findBySalesYn(Boolean salesYn) {
-        return new ResponseEntity(productRepository.findBySalesYn(salesYn), HttpStatus.OK);
+    public ResponseEntity<ProductView> findBySalesYn(Boolean salesYn) {
+        List<Product> productFindBySalesYn = productRepository.findBySalesYn(salesYn);
+        List<ProductView> productViews = productFindBySalesYn.stream().map(p -> p.toProductView()).collect(Collectors.toList());
+        return new ResponseEntity(productViews, HttpStatus.OK);
     }
 
 }
