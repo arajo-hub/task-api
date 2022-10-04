@@ -18,6 +18,12 @@ public interface ProductService {
     ResponseEntity findById(Long id);
 
     /**
+     * 상품 전체 조회
+     * @return 상품 전체 리스트
+     */
+    ResponseEntity findAll();
+
+    /**
      * 아이디 리스트로 상품 리스트 검색
      * @param productIds 검색할 상품 아이디 리스트
      * @return 검색한 상품 리스트
