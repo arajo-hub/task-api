@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -45,9 +46,6 @@ public class OrderControllerTest {
     private OrderService orderService;
 
     @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
@@ -58,6 +56,8 @@ public class OrderControllerTest {
 
     private MockMvc mockMvc;
 
+    private MockHttpSession session;
+
     private static Member testMember;
 
     private static List<Product> testProducts;
@@ -67,6 +67,8 @@ public class OrderControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        session = new MockHttpSession(null);
+        session.setAttribute("id", "test1234");
     }
 
     @BeforeEach
@@ -119,6 +121,7 @@ public class OrderControllerTest {
     @DisplayName("주문내역 조회")
     void findAllOrder() throws Exception {
         MvcResult result = mockMvc.perform(get("/order/list")
+                        .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id", testMember.getId()))
                 .andExpect(status().isOk())

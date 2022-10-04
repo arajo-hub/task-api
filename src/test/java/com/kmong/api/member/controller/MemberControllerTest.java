@@ -56,7 +56,7 @@ public class MemberControllerTest {
                                                 .email("test1234@kmong.co.kr")
                                                 .pwd("test1234")
                                                 .build();
-        mockMvc.perform(post("/join")
+        mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberCreate)))
                         .andExpect(status().isOk());
@@ -72,16 +72,17 @@ public class MemberControllerTest {
     @Test
     @DisplayName("로그인")
     void login() throws Exception {
+        String pwd = "test1234";
         Member member = Member.builder()
                                 .id("test1234")
                                 .email("test1234@naver.com")
-                                .pwd("test1234")
+                                .pwd(PwdEncryption.encrypt(pwd))
                                 .sessionId("sessionId").build();
         memberRepository.save(member);
 
-        MemberSearch memberSearch = MemberSearch.builder().id(member.getId()).pwd(member.getPwd()).build();
+        MemberSearch memberSearch = MemberSearch.builder().id(member.getId()).pwd(pwd).build();
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/member/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberSearch)))
                         .andExpect(status().isOk());
@@ -92,7 +93,7 @@ public class MemberControllerTest {
     void loginNotExistsId() throws Exception {
         MemberSearch memberSearch = MemberSearch.builder().id("test1234").pwd("test1234").build();
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/member/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberSearch)))
                 .andExpect(status().isNotFound());
@@ -111,7 +112,7 @@ public class MemberControllerTest {
         String wrongPwd = String.format("%s1", member.getPwd());
         MemberSearch memberSearch = MemberSearch.builder().id(member.getId()).pwd(wrongPwd).build();
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/member/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberSearch)))
                 .andExpect(status().isBadRequest());
@@ -120,8 +121,9 @@ public class MemberControllerTest {
     @Test
     @DisplayName("로그아웃")
     void logout() throws Exception {
-        MockHttpSession session = new MockHttpSession(null, "test1234");
-        mockMvc.perform(post("/logout")
+        MockHttpSession session = new MockHttpSession(null);
+        session.setAttribute("id", "test1234");
+        mockMvc.perform(post("/member/logout")
                 .session(session))
                 .andExpect(status().isOk());
         assertTrue(session.isInvalid());
