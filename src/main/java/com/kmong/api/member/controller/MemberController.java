@@ -23,17 +23,17 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/join")
+    @PostMapping("/member/join")
     public ResponseEntity join(@RequestBody MemberCreate memberCreate) {
         return memberService.join(memberCreate);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/member/login")
     public ResponseEntity login(HttpSession session, @RequestBody MemberSearch memberSearch) {
         return loginService.login(session, memberSearch);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/member/logout")
     public ResponseEntity logout(HttpSession session) {
         session.invalidate();
         return new ResponseEntity(HttpStatus.OK);

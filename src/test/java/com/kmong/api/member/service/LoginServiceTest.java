@@ -1,5 +1,6 @@
 package com.kmong.api.member.service;
 
+import com.kmong.api.config.encrypt.PwdEncryption;
 import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.domain.Member;
 import com.kmong.api.member.request.MemberSearch;
@@ -34,7 +35,7 @@ public class LoginServiceTest {
         Member member = Member.builder()
                                 .id("test1234")
                                 .email("test1234@naver.com")
-                                .pwd("test1234")
+                                .pwd(PwdEncryption.encrypt("test1234"))
                                 .sessionId("sessionId")
                                 .build();
         memberRepository.save(member);

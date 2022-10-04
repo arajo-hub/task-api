@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -42,13 +43,16 @@ public class ProductControllerTest {
 
     private MockMvc mockMvc;
 
+    private MockHttpSession session;
+
     private static List<Product> products;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        session = new MockHttpSession(null);
+        session.setAttribute("id", "test1234");
     }
-
     @BeforeEach
     void init() {
         products = List.of(Product.builder()
@@ -78,6 +82,7 @@ public class ProductControllerTest {
     void findById() throws Exception {
         Product savedProduct = products.get(0);
         mockMvc.perform(get(String.format("/product/list/%d", savedProduct.getId()))
+                        .session(session)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.productName").value(savedProduct.getProductName()));
@@ -88,6 +93,7 @@ public class ProductControllerTest {
     void findByProductName() throws Exception {
         String keyword = "명함";
         MvcResult result = mockMvc.perform(get("/product/list/name")
+                        .session(session)
                         .param("productName", keyword)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -103,6 +109,7 @@ public class ProductControllerTest {
     @DisplayName("판매 여부로 상품 조회")
     void findBySalesYn() throws Exception {
         MvcResult result = mockMvc.perform(get("/product/list/salesyn")
+                        .session(session)
                         .param("salesYn", "Y")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

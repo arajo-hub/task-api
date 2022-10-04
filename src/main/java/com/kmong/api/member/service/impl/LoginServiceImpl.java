@@ -1,5 +1,6 @@
 package com.kmong.api.member.service.impl;
 
+import com.kmong.api.config.encrypt.PwdEncryption;
 import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.domain.Member;
 import com.kmong.api.member.request.MemberSearch;
@@ -33,7 +34,7 @@ public class LoginServiceImpl implements LoginService {
         Optional<Member> memberFromDB = memberRepository.findById(memberSearch.getId());
         if (memberFromDB.isPresent()) {
             Member memberFindById = memberFromDB.get();
-            if (memberFindById.getPwd().equals(memberSearch.getPwd())) {
+            if (memberFindById.getPwd().equals(PwdEncryption.encrypt(memberSearch.getPwd()))) {
                 httpSession.setAttribute("id", memberFindById.getId());
                 response = new ResponseEntity(memberFindById.toMemberView(), HttpStatus.OK);
             } else {
