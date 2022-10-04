@@ -10,10 +10,10 @@ public class ProductSearch {
 
     private Long id;
     private String productName;
-    private boolean salesYn;
+    private String salesYn;
 
     @Builder
-    public ProductSearch(Long id, String productName, boolean salesYn) {
+    public ProductSearch(Long id, String productName, String salesYn) {
         this.id = id;
         this.productName = productName;
         this.salesYn = salesYn;

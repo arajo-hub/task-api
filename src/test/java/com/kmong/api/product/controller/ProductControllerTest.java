@@ -81,8 +81,9 @@ public class ProductControllerTest {
     @DisplayName("상품 아이디로 조회")
     void findById() throws Exception {
         Product savedProduct = products.get(0);
-        mockMvc.perform(get(String.format("/product/list/%d", savedProduct.getId()))
+        mockMvc.perform(get(String.format("/product/list/id"))
                         .session(session)
+                        .param("id", String.valueOf(savedProduct.getId()))
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.productName").value(savedProduct.getProductName()));

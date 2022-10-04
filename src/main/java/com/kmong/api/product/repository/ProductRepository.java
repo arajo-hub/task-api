@@ -61,6 +61,16 @@ public class ProductRepository {
     }
 
     /**
+     * 상품 전체 조회
+     * @return 상품 전체 목록
+     */
+    public List<Product> findAll() {
+        return queryFactory.selectFrom(product)
+                .orderBy(product.id.asc())
+                .fetch();
+    }
+
+    /**
      * 아이디로 상품 검색
      * @param id 검색할 상품아이디
      * @return 검색한 상품정보

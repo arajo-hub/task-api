@@ -34,6 +34,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * 상품 전체 조회
+     * @return 상품 전체 리스트
+     */
+    @Override
+    public ResponseEntity findAll() {
+        List<Product> products = productRepository.findAll();
+        List<ProductView> productViews = products.stream().map(p -> p.toProductView()).collect(Collectors.toList());
+        return new ResponseEntity(productViews, HttpStatus.OK);
+    }
+
+    /**
      * 아이디 리스트로 상품 리스트 검색
      * @param productIds 검색할 상품 아이디 리스트
      * @return 검색한 상품 리스트
