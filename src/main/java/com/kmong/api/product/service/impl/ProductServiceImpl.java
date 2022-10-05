@@ -1,7 +1,9 @@
 package com.kmong.api.product.service.impl;
 
+import com.kmong.api.common.response.ListResponse;
 import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.product.domain.Product;
+import com.kmong.api.product.exception.ProductNotFoundException;
 import com.kmong.api.product.repository.ProductRepository;
 import com.kmong.api.product.request.ProductCreate;
 import com.kmong.api.product.request.ProductSearch;
@@ -43,8 +45,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity findAll(ProductSearch productSearch) {
         List<Product> products = productRepository.findAll(productSearch);
+
+        if (!ObjectUtils.isEmpty(productSearch) && products.isEmpty()) {
+            throw new ProductNotFoundException();
+        }
+
         List<ProductView> productViews = products.stream().map(p -> p.toProductView()).collect(Collectors.toList());
-        return new ResponseEntity(productViews, HttpStatus.OK);
+        ListResponse body = ListResponse.builder()
+                                        .code("200")
+                                        .message("상품이 조회되었습니다.")
+                                        .build();
+        body.setObjects(productViews);
+        return new ResponseEntity(body, HttpStatus.OK);
     }
 
     /**

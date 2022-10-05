@@ -44,7 +44,7 @@ public class Product {
 
     public ImpossibleProductView toImpossibleProductView() {
         return ImpossibleProductView.builder()
-                                    .id(id)
+                                    .productId(id)
                                     .productName(productName)
                                     .price(price)
                                     .salesYn(salesYn)
