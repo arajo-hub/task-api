@@ -62,7 +62,7 @@ public class MemberRepository {
      */
     public boolean isAlreadyExist(MemberCreate memberCreate) {
         List<Member> alreadyExistMembers = queryFactory.selectFrom(member)
-                .where(isSameId(memberCreate.getId()).or(isSameEmail(memberCreate.getEmail())))
+                .where(isSameId(memberCreate.getMemberId()).or(isSameEmail(memberCreate.getEmail())))
                 .fetch();
         return !CollectionUtils.isEmpty(alreadyExistMembers);
     }

@@ -33,7 +33,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public ResponseEntity<MemberView> login(HttpSession httpSession, MemberSearch memberSearch) {
         ResponseEntity response = new ResponseEntity(HttpStatus.OK);
-        Optional<Member> memberFromDB = memberRepository.findById(memberSearch.getId());
+        Optional<Member> memberFromDB = memberRepository.findById(memberSearch.getMemberId());
         if (memberFromDB.isPresent()) {
             Member memberFindById = memberFromDB.get();
             if (memberFindById.getPwd().equals(PwdEncryption.encrypt(memberSearch.getPwd()))) {

@@ -42,7 +42,7 @@ public class LoginServiceTest {
 
         //when
         MemberSearch memberSearch = MemberSearch.builder()
-                                                .id("test1234")
+                                                .memberId("test1234")
                                                 .pwd("test1234")
                                                 .build();
         ResponseEntity response = loginService.login(new MockHttpSession(), memberSearch);
@@ -56,7 +56,7 @@ public class LoginServiceTest {
     void loginNotExistsId() {
         assertThrows(MemberNotFoundException.class, () -> {
             MemberSearch memberSearch = MemberSearch.builder()
-                    .id("test1234")
+                    .memberId("test1234")
                     .pwd("test1234")
                     .build();
             loginService.login(new MockHttpSession(), memberSearch);
@@ -78,7 +78,7 @@ public class LoginServiceTest {
             //when
             String wrongPwd = String.format("%s1", member.getPwd());
             MemberSearch memberSearch = MemberSearch.builder()
-                    .id("test1234")
+                    .memberId("test1234")
                     .pwd(wrongPwd)
                     .build();
             loginService.login(new MockHttpSession(), memberSearch);

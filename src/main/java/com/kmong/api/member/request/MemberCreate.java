@@ -18,7 +18,7 @@ public class MemberCreate {
     @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9]*$", message = "아이디는 첫시작을 영어로, 구성은 영숫자로만 가능합니다.")
     @NotNull(message = "아이디는 필수항목입니다.")
     @Size(min = 1, max = 15, message = "아이디는 1자부터 15자까지 가능합니다.")
-    private String id;
+    private String memberId;
 
     @NotNull(message = "이메일은 필수항목입니다.")
     @Size(min = 1, message = "이메일을 입력해주세요.")
@@ -30,15 +30,15 @@ public class MemberCreate {
     private String pwd;
 
     @Builder
-    public MemberCreate(String id, String email, String pwd) {
-        this.id = id;
+    public MemberCreate(String memberId, String email, String pwd) {
+        this.memberId = memberId;
         this.email = email;
         this.pwd = pwd;
     }
 
     public Member toMember() {
         return Member.builder()
-                    .id(id)
+                    .id(memberId)
                     .email(email)
                     .pwd(PwdEncryption.encrypt(pwd))
                     .build();

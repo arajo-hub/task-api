@@ -53,7 +53,7 @@ public class MemberControllerTest {
     @DisplayName("회원가입")
     void join() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                                                .id("test1234")
+                                                .memberId("test1234")
                                                 .email("test1234@kmong.co.kr")
                                                 .pwd("test1234")
                                                 .build();
@@ -62,10 +62,10 @@ public class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(memberCreate)))
                         .andExpect(status().isCreated());
 
-        Optional<Member> memberFindById = memberRepository.findById(memberCreate.getId());
+        Optional<Member> memberFindById = memberRepository.findById(memberCreate.getMemberId());
         Member member = memberFindById.isPresent() ? memberFindById.get() : null;
 
-        assertEquals(memberCreate.getId(), member.getId());
+        assertEquals(memberCreate.getMemberId(), member.getId());
         assertEquals(memberCreate.getEmail(), member.getEmail());
         assertEquals(PwdEncryption.encrypt(memberCreate.getPwd()), member.getPwd());
     }
@@ -87,7 +87,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals("id", key);
+            assertEquals("memberId", key);
         });
     }
 
@@ -95,7 +95,7 @@ public class MemberControllerTest {
     @DisplayName("15자이상 아이디 회원가입 시도")
     void joinOversizeId() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("test1234test1234test1234test1234")
+                .memberId("test1234test1234test1234test1234")
                 .email("test1234@kmong.co.kr")
                 .pwd("test1234")
                 .build();
@@ -109,7 +109,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals("id", key);
+            assertEquals("memberId", key);
         });
     }
 
@@ -117,7 +117,7 @@ public class MemberControllerTest {
     @DisplayName("공백포함 아이디 회원가입 시도")
     void joinIdWithWhitespace() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("test 1234")
+                .memberId("test 1234")
                 .email("test1234@kmong.co.kr")
                 .pwd("test1234")
                 .build();
@@ -131,7 +131,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals("id", key);
+            assertEquals("memberId", key);
         });
     }
 
@@ -139,7 +139,7 @@ public class MemberControllerTest {
     @DisplayName("특수문자포함 아이디 회원가입 시도")
     void joinIdWithSpecialCharacters() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("test♀1234")
+                .memberId("test♀1234")
                 .email("test1234@kmong.co.kr")
                 .pwd("test1234")
                 .build();
@@ -153,7 +153,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals("id", key);
+            assertEquals("memberId", key);
         });
     }
 
@@ -161,7 +161,7 @@ public class MemberControllerTest {
     @DisplayName("숫자로 시작하는 아이디 회원가입 시도")
     void joinIdThatStartsNumber() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("1test1234")
+                .memberId("1test1234")
                 .email("test1234@kmong.co.kr")
                 .pwd("test1234")
                 .build();
@@ -175,7 +175,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals("id", key);
+            assertEquals("memberId", key);
         });
     }
 
@@ -183,7 +183,7 @@ public class MemberControllerTest {
     @DisplayName("비밀번호없이 회원가입 시도")
     void joinWithoutPwd() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("test1234")
+                .memberId("test1234")
                 .email("test1234@kmong.co.kr")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
@@ -204,7 +204,7 @@ public class MemberControllerTest {
     @DisplayName("15자이상 비밀번호 회원가입 시도")
     void joinOversizePwd() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("test1234")
+                .memberId("test1234")
                 .email("test1234@kmong.co.kr")
                 .pwd("test1234test1234test1234test1234")
                 .build();
@@ -226,7 +226,7 @@ public class MemberControllerTest {
     @DisplayName("이메일없이 회원가입 시도")
     void joinWithoutEmail() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("test1234")
+                .memberId("test1234")
                 .pwd("test1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
@@ -247,7 +247,7 @@ public class MemberControllerTest {
     @DisplayName("띄어쓰기포함인 이메일로 회원가입 시도")
     void joinEmailWithWhitespace() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("test1234")
+                .memberId("test1234")
                 .email("test 1234@kmong.co.kr")
                 .pwd("test1234")
                 .build();
@@ -276,7 +276,7 @@ public class MemberControllerTest {
                                 .sessionId("sessionId").build();
         memberRepository.save(member);
 
-        MemberSearch memberSearch = MemberSearch.builder().id(member.getId()).pwd(pwd).build();
+        MemberSearch memberSearch = MemberSearch.builder().memberId(member.getId()).pwd(pwd).build();
 
         mockMvc.perform(post("/member/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -287,7 +287,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("존재하지 않는 아이디로 로그인 시도")
     void loginNotExistsId() throws Exception {
-        MemberSearch memberSearch = MemberSearch.builder().id("test1234").pwd("test1234").build();
+        MemberSearch memberSearch = MemberSearch.builder().memberId("test1234").pwd("test1234").build();
 
         mockMvc.perform(post("/member/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -308,7 +308,7 @@ public class MemberControllerTest {
 
         String wrongPwd = String.format("%s1", member.getPwd());
         MemberSearch memberSearch = MemberSearch.builder()
-                                                .id(member.getId())
+                                                .memberId(member.getId())
                                                 .pwd(wrongPwd)
                                                 .build();
 
@@ -334,7 +334,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals("id", key);
+            assertEquals("memberId", key);
         });
     }
 
@@ -342,7 +342,7 @@ public class MemberControllerTest {
     @DisplayName("15자이상 아이디로 로그인 시도")
     void loginOversizeId() throws Exception {
         MemberSearch memberSearch = MemberSearch.builder()
-                                                .id("test1234test1234test1234test1234")
+                                                .memberId("test1234test1234test1234test1234")
                                                 .pwd("test1234")
                                                 .build();
 
@@ -355,7 +355,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals("id", key);
+            assertEquals("memberId", key);
         });
     }
 
@@ -363,7 +363,7 @@ public class MemberControllerTest {
     @DisplayName("비밀번호없이 로그인 시도")
     void loginWithoutPwd() throws Exception {
         MemberSearch memberSearch = MemberSearch.builder()
-                .id("test1234")
+                .memberId("test1234")
                 .build();
 
         MvcResult mvcResult = mockMvc.perform(post("/member/login")
@@ -383,7 +383,7 @@ public class MemberControllerTest {
     @DisplayName("15자이상 비밀번호 로그인 시도")
     void loginOversizePwd() throws Exception {
         MemberSearch memberSearch = MemberSearch.builder()
-                .id("test1234")
+                .memberId("test1234")
                 .pwd("test1234test1234test1234test1234")
                 .build();
 
