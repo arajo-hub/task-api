@@ -1,6 +1,8 @@
 package com.kmong.api.member.service.impl;
 
+import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.member.domain.Member;
+import com.kmong.api.member.exception.DuplicateMemberException;
 import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.request.MemberCreate;
 import com.kmong.api.member.response.MemberView;
@@ -25,16 +27,21 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ResponseEntity<MemberView> join(MemberCreate memberCreate) {
-        ResponseEntity response = new ResponseEntity(HttpStatus.OK);
-        Member member = memberCreate.toMember();
-        Optional<Member> savedResult = memberRepository.save(member);
-        if (savedResult.isPresent()) {
-            MemberView memberView = savedResult.get().toMemberView();
-            response = new ResponseEntity(memberView, HttpStatus.OK);
+        ResponseEntity response = new ResponseEntity(HttpStatus.CREATED);
+        if (memberRepository.isAlreadyExist(memberCreate)) {
+            throw new DuplicateMemberException();
         } else {
-            response = new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            Member member = memberCreate.toMember();
+            memberRepository.save(member);
+            MemberView memberView = member.toMemberView();
+            SingleResponse body = SingleResponse.builder()
+                                                .code("201")
+                                                .message("회원가입되었습니다.")
+                                                .object(member.toMemberView())
+                                                .build();
+            response = new ResponseEntity(body, HttpStatus.CREATED);
         }
 
-        return new ResponseEntity(memberRepository.save(member), HttpStatus.OK);
+        return response;
     }
 }
