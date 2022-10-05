@@ -11,11 +11,11 @@ import javax.validation.constraints.Size;
 @Setter
 public class MemberSearch {
 
-    @NotNull
+    @NotNull(message = "아이디는 필수항목입니다.")
     @Size(min = 1, max = 15, message = "아이디는 1자부터 15자까지 가능합니다.")
     private String memberId;
 
-    @NotNull
+    @NotNull(message = "비밀번호는 필수항목입니다.")
     @Size(min = 1, max = 15, message = "비밀번호는 1자부터 15자까지 가능합니다.")
     private String pwd;
 
