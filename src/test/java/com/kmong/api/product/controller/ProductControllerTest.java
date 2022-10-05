@@ -2,6 +2,7 @@ package com.kmong.api.product.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kmong.api.common.response.ListResponse;
 import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.common.response.ValidationExceptionResponse;
 import com.kmong.api.product.domain.Product;
@@ -102,43 +103,36 @@ public class ProductControllerTest {
     void findByProductName() throws Exception {
         String keyword = "명함";
 
-        ProductSearch productSearch = ProductSearch.builder()
-                                                    .productName(keyword)
-                                                    .build();
-
         MvcResult result = mockMvc.perform(get("/product/list")
                         .session(session)
-                        .content(objectMapper.writeValueAsString(productSearch))
+                        .param("productName", keyword)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andDo(MockMvcResultHandlers.print())
                         .andExpect(status().isOk())
                         .andReturn();
 
         String jsonContent = result.getResponse().getContentAsString();
-        List<Product> searchProducts = objectMapper.readValue(jsonContent, new TypeReference<List<Product>>() {});
+        ListResponse<ProductView> searchProducts = objectMapper.readValue(jsonContent, new TypeReference<ListResponse<ProductView>>() {});
 
-        assertEquals(products.stream().filter(p -> p.getProductName().contains(keyword)).count(), searchProducts.size());
+        assertEquals(products.stream().filter(p -> p.getProductName().contains(keyword)).count(), searchProducts.getObjects().size());
     }
 
     @Test
     @DisplayName("판매 여부로 상품 조회")
     void findBySalesYn() throws Exception {
-        ProductSearch productSearch = ProductSearch.builder()
-                                                    .salesYn(true)
-                                                    .build();
 
         MvcResult result = mockMvc.perform(get("/product/list")
                         .session(session)
-                        .content(objectMapper.writeValueAsString(productSearch))
+                        .param("salesYn", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andDo(MockMvcResultHandlers.print())
                         .andReturn();
 
         String jsonContent = result.getResponse().getContentAsString();
-        List searchProducts = objectMapper.readValue(jsonContent, new TypeReference<List<ProductView>>() {});
+        ListResponse<ProductView> searchProducts = objectMapper.readValue(jsonContent, new TypeReference<ListResponse<ProductView>>() {});
 
-        assertEquals(products.stream().filter(p -> p.isSalesYn() == Boolean.TRUE).count(), searchProducts.size());
+        assertEquals(products.stream().filter(p -> p.isSalesYn() == Boolean.TRUE).count(), searchProducts.getObjects().size());
     }
 
     @Test

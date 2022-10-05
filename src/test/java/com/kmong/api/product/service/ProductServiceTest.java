@@ -141,7 +141,6 @@ public class ProductServiceTest {
                                                     .salesYn(true)
                                                     .build();
         ResponseEntity response = productService.createProduct(productCreate);
-        System.out.println(response.getBody());
         SingleResponse searchedProduct = (SingleResponse) response.getBody();
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertTrue(!ObjectUtils.isEmpty(searchedProduct.getObject()));
