@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -95,8 +94,7 @@ public class ProductControllerTest {
                         .content(objectMapper.writeValueAsString(productSearch))
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
-                        .andDo(MockMvcResultHandlers.print())
-                        .andExpect(jsonPath("$[0].productName").value(products.get(0).getProductName()));
+                        .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -138,7 +136,7 @@ public class ProductControllerTest {
                         .andReturn();
 
         String jsonContent = result.getResponse().getContentAsString();
-        List<ProductView> searchProducts = objectMapper.readValue(jsonContent, new TypeReference<List<ProductView>>() {});
+        List searchProducts = objectMapper.readValue(jsonContent, new TypeReference<List<ProductView>>() {});
 
         assertEquals(products.stream().filter(p -> p.isSalesYn() == Boolean.TRUE).count(), searchProducts.size());
     }
@@ -163,8 +161,6 @@ public class ProductControllerTest {
 
 
         SingleResponse<ProductView> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<SingleResponse<ProductView>>() {});
-
-//        SingleResponse<ProductView> savedProduct = objectMapper.readValue(jsonContent, new TypeReference<SingleResponse<ProductView>>() {});
         assertTrue(!ObjectUtils.isEmpty(response));
     }
 

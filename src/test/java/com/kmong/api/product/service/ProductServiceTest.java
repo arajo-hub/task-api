@@ -2,6 +2,7 @@ package com.kmong.api.product.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kmong.api.common.response.ListResponse;
 import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
@@ -91,9 +92,9 @@ public class ProductServiceTest {
                                                     .build();
 
         ResponseEntity response = productService.findAll(productSearch);
-        List<Product> searchResult = (List<Product>) response.getBody();
+        ListResponse<ProductView> searchResult = (ListResponse<ProductView>) response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, searchResult.size());
+        assertEquals(2, searchResult.getObjects().size());
     }
 
     @Test
@@ -125,9 +126,9 @@ public class ProductServiceTest {
                                                     .build();
 
         ResponseEntity response = productService.findAll(productSearch);
-        List<Product> searchResult = (List<Product>) response.getBody();
+        ListResponse searchResult = (ListResponse) response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, searchResult.size());
+        assertEquals(1, searchResult.getObjects().size());
     }
 
     @Test
