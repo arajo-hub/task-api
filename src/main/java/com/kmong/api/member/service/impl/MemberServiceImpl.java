@@ -1,5 +1,6 @@
 package com.kmong.api.member.service.impl;
 
+import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.member.domain.Member;
 import com.kmong.api.member.exception.DuplicateMemberException;
 import com.kmong.api.member.repository.MemberRepository;
@@ -33,7 +34,12 @@ public class MemberServiceImpl implements MemberService {
             Member member = memberCreate.toMember();
             memberRepository.save(member);
             MemberView memberView = member.toMemberView();
-            response = new ResponseEntity(memberView, HttpStatus.CREATED);
+            SingleResponse body = SingleResponse.builder()
+                                                .code("201")
+                                                .message("회원가입되었습니다.")
+                                                .object(member.toMemberView())
+                                                .build();
+            response = new ResponseEntity(body, HttpStatus.CREATED);
         }
 
         return response;

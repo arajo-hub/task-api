@@ -1,5 +1,6 @@
 package com.kmong.api.member.service.impl;
 
+import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.config.encrypt.PwdEncryption;
 import com.kmong.api.member.domain.Member;
 import com.kmong.api.member.exception.MemberNotFoundException;
@@ -38,7 +39,12 @@ public class LoginServiceImpl implements LoginService {
             Member memberFindById = memberFromDB.get();
             if (memberFindById.getPwd().equals(PwdEncryption.encrypt(memberSearch.getPwd()))) {
                 httpSession.setAttribute("id", memberFindById.getId());
-                response = new ResponseEntity(memberFindById.toMemberView(), HttpStatus.OK);
+                SingleResponse body = SingleResponse.builder()
+                                                    .code("200")
+                                                    .message("로그인되었습니다.")
+                                                    .object(memberFindById.toMemberView())
+                                                    .build();
+                response = new ResponseEntity(body, HttpStatus.OK);
             } else {
                 throw new WrongPasswordException();
             }
