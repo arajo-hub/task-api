@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
             for (Product product : products) {
                 if (product.getId().equals(orderedProduct.getId())) {
                     int newQuantity = product.getQuantity() - orderedProduct.getQuantity();
-                    product.setQuantity(newQuantity);
+                    productRepository.decreaseQuantity(product.getId(), newQuantity);
                     break;
                 }
             }
