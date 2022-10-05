@@ -131,24 +131,23 @@ public class OrderServiceImpl implements OrderService {
     private List<ImpossibleProductView> getImpossibleProducts(OrderCreate orderCreate, List<Product> products) {
         List<ImpossibleProductView> impossibleProducts = new ArrayList<ImpossibleProductView>();
 
-        boolean isPossible = false;
-
         for (Product product : products) {
+            boolean isPossible = true;
             ImpossibleProductView impossibleProductView = product.toImpossibleProductView();
             for (OrderedProduct orderedProduct : orderCreate.getOrderedProducts()) {
                 impossibleProductView.setQuantity(orderedProduct.getQuantity());
                 if (product.getId().equals(orderedProduct.getId())
-                        && product.isSalesYn()) {
+                        && !product.isSalesYn()) {
                     impossibleProductView.setReason("판매중이 아닌 상품입니다.");
-                    isPossible = true;
+                    isPossible = false;
                 }
 
                 if (product.getId().equals(orderedProduct.getId())
-                        && product.getQuantity() >= orderedProduct.getQuantity()) {
+                        && product.getQuantity() < orderedProduct.getQuantity()) {
                     if (StringUtils.isNullOrEmpty(impossibleProductView.getReason())) {
                         impossibleProductView.setReason("재고가 부족합니다.");
                     }
-                    isPossible = true;
+                    isPossible = false;
                 }
             }
 
@@ -168,8 +167,8 @@ public class OrderServiceImpl implements OrderService {
     private static List<OrderedProduct> getNotExistsProductsInOrderedProducts(OrderCreate orderCreate, List<Product> products) {
         List<OrderedProduct> notExists = new ArrayList<OrderedProduct>();
 
-        boolean isExists = false;
         for (OrderedProduct orderedProduct : orderCreate.getOrderedProducts()) {
+            boolean isExists = false;
             for (Product product : products) {
                 if (product.getId().equals(orderedProduct.getId())) {
                     isExists = true;
