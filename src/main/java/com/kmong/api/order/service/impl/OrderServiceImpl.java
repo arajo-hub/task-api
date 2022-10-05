@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
         // 상품정보 -> 주문상품으로 변경
         for (Product product : products) {
             // 생성 요청된 주문정보에서 같은 상품 아이디의 주문수량 찾기
-            Optional<Integer> orderQuantity = orderCreate.getOrderedProducts().stream().filter(p -> product.getId().equals(p.getId())).map(p -> p.getQuantity()).findFirst();
+            Optional<Integer> orderQuantity = orderCreate.getOrderedProducts().stream().filter(p -> product.getId().equals(p.getProductId())).map(p -> p.getQuantity()).findFirst();
             if (orderQuantity.isPresent()) {
                 orderProducts.add(OrderProduct.builder()
                                                 .orderProductName(product.getProductName())
@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
         boolean isPossible = false;
         for (OrderedProduct orderedProduct : orderCreate.getOrderedProducts()) {
             for (Product product : products) {
-                if (product.getId().equals(orderedProduct.getId())) {
+                if (product.getId().equals(orderedProduct.getProductId())) {
                     int newQuantity = product.getQuantity() - orderedProduct.getQuantity();
                     productRepository.decreaseQuantity(product.getId(), newQuantity);
                     break;
@@ -136,13 +136,13 @@ public class OrderServiceImpl implements OrderService {
             ImpossibleProductView impossibleProductView = product.toImpossibleProductView();
             for (OrderedProduct orderedProduct : orderCreate.getOrderedProducts()) {
                 impossibleProductView.setQuantity(orderedProduct.getQuantity());
-                if (product.getId().equals(orderedProduct.getId())
+                if (product.getId().equals(orderedProduct.getProductId())
                         && !product.isSalesYn()) {
                     impossibleProductView.setReason("판매중이 아닌 상품입니다.");
                     isPossible = false;
                 }
 
-                if (product.getId().equals(orderedProduct.getId())
+                if (product.getId().equals(orderedProduct.getProductId())
                         && product.getQuantity() < orderedProduct.getQuantity()) {
                     if (StringUtils.isNullOrEmpty(impossibleProductView.getReason())) {
                         impossibleProductView.setReason("재고가 부족합니다.");
@@ -170,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderedProduct orderedProduct : orderCreate.getOrderedProducts()) {
             boolean isExists = false;
             for (Product product : products) {
-                if (product.getId().equals(orderedProduct.getId())) {
+                if (product.getId().equals(orderedProduct.getProductId())) {
                     isExists = true;
                     break;
                 }
