@@ -1,14 +1,13 @@
 package com.kmong.api.product.domain;
 
 import com.kmong.api.product.response.ProductView;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Product {
 

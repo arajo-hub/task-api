@@ -8,13 +8,15 @@ import lombok.Setter;
 @Setter
 public class ProductSearch {
 
-    private Long id;
+    private Long productId;
+
     private String productName;
-    private String salesYn;
+
+    private Boolean salesYn;
 
     @Builder
-    public ProductSearch(Long id, String productName, String salesYn) {
-        this.id = id;
+    public ProductSearch(Long productId, String productName, Boolean salesYn) {
+        this.productId = productId;
         this.productName = productName;
         this.salesYn = salesYn;
     }
