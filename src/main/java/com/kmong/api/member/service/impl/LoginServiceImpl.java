@@ -1,8 +1,11 @@
 package com.kmong.api.member.service.impl;
 
+import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.config.encrypt.PwdEncryption;
-import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.domain.Member;
+import com.kmong.api.member.exception.MemberNotFoundException;
+import com.kmong.api.member.exception.WrongPasswordException;
+import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.request.MemberSearch;
 import com.kmong.api.member.response.MemberView;
 import com.kmong.api.member.service.LoginService;
@@ -31,19 +34,22 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public ResponseEntity<MemberView> login(HttpSession httpSession, MemberSearch memberSearch) {
         ResponseEntity response = new ResponseEntity(HttpStatus.OK);
-        Optional<Member> memberFromDB = memberRepository.findById(memberSearch.getId());
+        Optional<Member> memberFromDB = memberRepository.findById(memberSearch.getMemberId());
         if (memberFromDB.isPresent()) {
             Member memberFindById = memberFromDB.get();
             if (memberFindById.getPwd().equals(PwdEncryption.encrypt(memberSearch.getPwd()))) {
                 httpSession.setAttribute("id", memberFindById.getId());
-                response = new ResponseEntity(memberFindById.toMemberView(), HttpStatus.OK);
+                SingleResponse body = SingleResponse.builder()
+                                                    .code("200")
+                                                    .message("로그인되었습니다.")
+                                                    .object(memberFindById.toMemberView())
+                                                    .build();
+                response = new ResponseEntity(body, HttpStatus.OK);
             } else {
-                // 비밀번호가 다른 경우
-                response = new ResponseEntity(HttpStatus.BAD_REQUEST);
+                throw new WrongPasswordException();
             }
         } else {
-            // 찾는 멤버가 존재하지 않는 경우
-            response = new ResponseEntity(HttpStatus.NOT_FOUND);
+            throw new MemberNotFoundException();
         }
         return response;
     }

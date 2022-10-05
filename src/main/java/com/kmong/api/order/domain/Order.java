@@ -3,14 +3,12 @@ package com.kmong.api.order.domain;
 import com.kmong.api.member.domain.Member;
 import com.kmong.api.order.response.OrderProductView;
 import com.kmong.api.order.response.OrderView;
-import com.kmong.api.product.domain.Product;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +41,7 @@ public class Order {
     public OrderView toOrderView() {
         List<OrderProductView> orderProductViews = orderProducts.stream().map(orderProduct -> orderProduct.toOrderProductView()).collect(Collectors.toList());
         return OrderView.builder()
-                        .id(id)
+                        .orderId(id)
                         .orderProductViews(orderProductViews)
                         .orderDatetime(orderDatetime)
                         .totalPrice(calculateTotalPrice())
@@ -51,6 +49,6 @@ public class Order {
     }
 
     private int calculateTotalPrice() {
-        return orderProducts.stream().mapToInt(op -> op.getPrice()).sum();
+        return orderProducts.stream().mapToInt(op -> op.getPrice() * op.getQuantity()).sum();
     }
 }

@@ -1,11 +1,13 @@
 package com.kmong.api.product.controller;
 
+import com.kmong.api.product.request.ProductCreate;
+import com.kmong.api.product.request.ProductSearch;
 import com.kmong.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -13,21 +15,14 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/product/list/{id}")
-    public ResponseEntity findById(@PathVariable Long id) {
-        return productService.findById(id);
+    @PostMapping("/product/create")
+    public ResponseEntity createProduct(@RequestBody @Valid ProductCreate productCreate) {
+        return productService.createProduct(productCreate);
     }
 
-    @GetMapping("/product/list/name")
-    public ResponseEntity findByProductName(String productName) {
-        return productService.findByProductName(productName);
-    }
-
-    @GetMapping("/product/list/salesyn")
-    public ResponseEntity findBySalesYn(String salesYn) {
-        Boolean sales = "Y".equalsIgnoreCase(salesYn) ? Boolean.TRUE
-                                                        : "N".equalsIgnoreCase(salesYn) ? Boolean.FALSE : null;
-        return productService.findBySalesYn(sales);
+    @GetMapping("/product/list")
+    public ResponseEntity findAll(@ModelAttribute ProductSearch productSearch) {
+        return productService.findAll(productSearch);
     }
 
 }

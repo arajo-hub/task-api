@@ -2,11 +2,13 @@ package com.kmong.api.product.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kmong.api.common.response.ListResponse;
+import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
+import com.kmong.api.product.request.ProductCreate;
+import com.kmong.api.product.request.ProductSearch;
 import com.kmong.api.product.response.ProductView;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,6 +32,9 @@ public class ProductServiceTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("상품 아이디로 조회")
@@ -83,10 +87,14 @@ public class ProductServiceTest {
                                         );
         productRepository.saveAll(products);
 
-        ResponseEntity response = productService.findByProductName("제작");
-        List<Product> searchResult = (List<Product>) response.getBody();
+        ProductSearch productSearch = ProductSearch.builder()
+                                                    .productName("제작")
+                                                    .build();
+
+        ResponseEntity response = productService.findAll(productSearch);
+        ListResponse<ProductView> searchResult = (ListResponse<ProductView>) response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, searchResult.size());
+        assertEquals(2, searchResult.getObjects().size());
     }
 
     @Test
@@ -113,10 +121,29 @@ public class ProductServiceTest {
         );
         productRepository.saveAll(products);
 
-        ResponseEntity response = productService.findBySalesYn(Boolean.FALSE);
-        List<Product> searchResult = (List<Product>) response.getBody();
+        ProductSearch productSearch = ProductSearch.builder()
+                                                    .salesYn(false)
+                                                    .build();
+
+        ResponseEntity response = productService.findAll(productSearch);
+        ListResponse searchResult = (ListResponse) response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, searchResult.size());
+        assertEquals(1, searchResult.getObjects().size());
+    }
+
+    @Test
+    @DisplayName("상품 등록")
+    void createProduct() {
+        ProductCreate productCreate = ProductCreate.builder()
+                                                    .productName("유튜브 백만뷰 노하우")
+                                                    .quantity(500)
+                                                    .price(40000)
+                                                    .salesYn(true)
+                                                    .build();
+        ResponseEntity response = productService.createProduct(productCreate);
+        SingleResponse searchedProduct = (SingleResponse) response.getBody();
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertTrue(!ObjectUtils.isEmpty(searchedProduct.getObject()));
     }
 
 }

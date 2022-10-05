@@ -1,0 +1,55 @@
+package com.kmong.api.config.advice;
+
+import com.kmong.api.common.exception.KmongApiException;
+import com.kmong.api.common.exception.KmongNotFoundException;
+import com.kmong.api.common.exception.KmongNotFoundListException;
+import com.kmong.api.common.response.ListResponse;
+import com.kmong.api.common.response.Response;
+import com.kmong.api.common.response.ValidationExceptionResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+
+@RestControllerAdvice
+public class ExceptionAdvice {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity hasInvalidParam(MethodArgumentNotValidException e) {
+        ValidationExceptionResponse response = ValidationExceptionResponse.builder()
+                                                                            .code("400")
+                                                                            .message("잘못된 요청입니다.")
+                                                                            .validation(new HashMap<>())
+                                                                            .build();
+
+        for (FieldError fieldError : e.getFieldErrors()) {
+            response.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(KmongNotFoundException.class)
+    public ResponseEntity kmongNotFoundException(KmongNotFoundException e) {
+        int statusCode = e.getStatusCode();
+        if (e instanceof KmongNotFoundListException) {
+            ListResponse body = new ListResponse(String.valueOf(statusCode), e.getMessage());
+            KmongNotFoundListException listException = (KmongNotFoundListException) e;
+            body.setObjects(listException.getList());
+            return ResponseEntity.status(statusCode).body(body);
+        } else {
+            return ResponseEntity.status(statusCode).body(new Response(String.valueOf(statusCode), e.getMessage()));
+        }
+    }
+
+    @ExceptionHandler(KmongApiException.class)
+    public ResponseEntity kmongApiException(KmongApiException e) {
+        int statusCode = e.getStatusCode();
+        Response body = new Response(String.valueOf(statusCode), e.getMessage());
+        return ResponseEntity.status(statusCode).body(body);
+    }
+
+}

@@ -9,15 +9,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    public static final String LOGIN_URL = "/member/login";
-    public static final String JOIN_URL = "/member/join";
+    public static final String MEMBER_LOGIN_URL = "/member/login";
+
+    public static final String MEMBER_JOIN_URL = "/member/join";
+
+    public static final String PRODUCT_LIST_URL = "/product/list";
 
     public static final String DB_URL = "/h2-console/*";
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AuthInterceptor())
-                .excludePathPatterns(LOGIN_URL, JOIN_URL, DB_URL)
+                .excludePathPatterns(MEMBER_LOGIN_URL, MEMBER_JOIN_URL, PRODUCT_LIST_URL, DB_URL)
                 .excludePathPatterns("/swagger-resources/**", "/webjars/**",
                         "/v2/**", "/swagger-ui.html/**");;
     }

@@ -1,14 +1,17 @@
 package com.kmong.api.product.domain;
 
+import com.kmong.api.order.response.ImpossibleProductView;
 import com.kmong.api.product.response.ProductView;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Product {
 
@@ -41,4 +44,14 @@ public class Product {
                 .salesYn(salesYn)
                 .build();
     }
+
+    public ImpossibleProductView toImpossibleProductView() {
+        return ImpossibleProductView.builder()
+                                    .productId(id)
+                                    .productName(productName)
+                                    .price(price)
+                                    .salesYn(salesYn)
+                                    .build();
+    }
+
 }
