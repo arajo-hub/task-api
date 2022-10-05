@@ -11,14 +11,14 @@ import java.util.List;
 @Setter
 public class OrderView {
 
-    private Long id;
+    private Long orderId;
     private List<OrderProductView> orderProductViews;
     private LocalDateTime orderDatetime;
     private int totalPrice;
 
     @Builder
-    public OrderView(Long id, List<OrderProductView> orderProductViews, LocalDateTime orderDatetime, int totalPrice) {
-        this.id = id;
+    public OrderView(Long orderId, List<OrderProductView> orderProductViews, LocalDateTime orderDatetime, int totalPrice) {
+        this.orderId = orderId;
         this.orderProductViews = orderProductViews;
         this.orderDatetime = orderDatetime;
         this.totalPrice = totalPrice;

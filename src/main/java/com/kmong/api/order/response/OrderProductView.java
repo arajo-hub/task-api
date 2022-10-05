@@ -8,15 +8,15 @@ import lombok.Setter;
 @Setter
 public class OrderProductView {
 
-    private Long id;
-    private String orderProductName;
+    private Long productId;
+    private String productName;
     private int quantity;
     private int price;
 
     @Builder
-    public OrderProductView(Long id, String orderProductName, int quantity, int price) {
-        this.id = id;
-        this.orderProductName = orderProductName;
+    public OrderProductView(Long productId, String productName, int quantity, int price) {
+        this.productId = productId;
+        this.productName = productName;
         this.quantity = quantity;
         this.price = price;
     }

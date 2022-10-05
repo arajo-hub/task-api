@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class ImpossibleProductView {
 
-    private Long id;
+    private Long productId;
     private String productName;
     private int quantity;
     private int price;
@@ -16,8 +16,8 @@ public class ImpossibleProductView {
     private String reason;
 
     @Builder
-    public ImpossibleProductView(Long id, String productName, int quantity, int price, boolean salesYn, String reason) {
-        this.id = id;
+    public ImpossibleProductView(Long productId, String productName, int quantity, int price, boolean salesYn, String reason) {
+        this.productId = productId;
         this.productName = productName;
         this.quantity = quantity;
         this.price = price;

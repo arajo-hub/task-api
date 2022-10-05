@@ -1,6 +1,7 @@
 package com.kmong.api.order.service.impl;
 
 import com.kmong.api.common.response.ListResponse;
+import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.member.domain.Member;
 import com.kmong.api.member.exception.MemberNotFoundException;
 import com.kmong.api.member.service.MemberService;
@@ -15,7 +16,7 @@ import com.kmong.api.order.response.OrderView;
 import com.kmong.api.order.service.OrderService;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.exception.ImpossibleOrderException;
-import com.kmong.api.product.exception.ProductNotFoundException;
+import com.kmong.api.product.exception.ProductsNotFoundException;
 import com.kmong.api.product.repository.ProductRepository;
 import com.kmong.api.product.service.ProductService;
 import com.querydsl.core.util.StringUtils;
@@ -65,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 존재하지 않는 상품 요청했는지 확인 -> ProductNotFoundException
         if (!CollectionUtils.isEmpty(notExists)) {
-            throw new ProductNotFoundException(notExists);
+            throw new ProductsNotFoundException(notExists);
         }
 
         List<ImpossibleProductView> impossibleProducts = getImpossibleProducts(orderCreate, products);
@@ -95,7 +96,8 @@ public class OrderServiceImpl implements OrderService {
             Order order = orderCreate.toOrder(memberFindById.get(), orderProducts);
             orderRepository.createOrder(order);
             decreaseQuantity(orderCreate, products);
-            response = new ResponseEntity(order.toOrderView(), HttpStatus.CREATED);
+            SingleResponse body = SingleResponse.builder().code("201").message("주문 완료했습니다.").object(order.toOrderView()).build();
+            response = new ResponseEntity(body, HttpStatus.CREATED);
         }
         return response;
     }

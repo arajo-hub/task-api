@@ -35,8 +35,8 @@ public class OrderProduct {
 
     public OrderProductView toOrderProductView() {
         return OrderProductView.builder()
-                                .id(id)
-                                .orderProductName(orderProductName)
+                                .productId(product.getId())
+                                .productName(orderProductName)
                                 .quantity(quantity)
                                 .price(price)
                                 .build();
