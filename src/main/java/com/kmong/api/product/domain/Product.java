@@ -1,5 +1,6 @@
 package com.kmong.api.product.domain;
 
+import com.kmong.api.order.response.ImpossibleProductView;
 import com.kmong.api.product.response.ProductView;
 import lombok.*;
 
@@ -39,5 +40,14 @@ public class Product {
                 .price(price)
                 .salesYn(salesYn)
                 .build();
+    }
+
+    public ImpossibleProductView toImpossibleProductView() {
+        return ImpossibleProductView.builder()
+                                    .id(id)
+                                    .productName(productName)
+                                    .price(price)
+                                    .salesYn(salesYn)
+                                    .build();
     }
 }

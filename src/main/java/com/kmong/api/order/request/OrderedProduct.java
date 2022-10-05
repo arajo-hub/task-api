@@ -16,4 +16,5 @@ public class OrderedProduct {
         this.id = id;
         this.quantity = quantity;
     }
+
 }

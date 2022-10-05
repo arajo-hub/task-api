@@ -1,21 +1,19 @@
 package com.kmong.api.order.repository;
 
 import com.kmong.api.order.domain.Order;
-import com.kmong.api.order.domain.OrderProduct;
+import com.kmong.api.order.request.OrderSearch;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.util.StringUtils;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 import static com.kmong.api.order.domain.QOrder.order;
-import static com.kmong.api.product.domain.QProduct.product;
 
 @Slf4j
 @Repository
@@ -50,9 +48,15 @@ public class OrderRepository {
      * @param id 주문내역을 조회할 회원 아이디
      * @return 주문내역 리스트
      */
-    public List<Order> findAllOrder(String id) {
+    public List<Order> findAllOrder(OrderSearch orderSearch) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (!StringUtils.isNullOrEmpty(orderSearch.getMemberId())) {
+            booleanBuilder.and(isEqualsToMemberId(orderSearch.getMemberId()));
+        }
+
         return queryFactory.selectFrom(order)
-                .where(isEqualsToMemberId(id))
+                .where(booleanBuilder)
                 .orderBy(order.id.asc())
                 .fetch();
     }
