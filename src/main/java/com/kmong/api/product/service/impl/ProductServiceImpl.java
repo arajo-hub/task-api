@@ -1,7 +1,10 @@
 package com.kmong.api.product.service.impl;
 
+import com.kmong.api.common.response.SingleResponse;
 import com.kmong.api.product.domain.Product;
 import com.kmong.api.product.repository.ProductRepository;
+import com.kmong.api.product.request.ProductCreate;
+import com.kmong.api.product.request.ProductSearch;
 import com.kmong.api.product.response.ProductView;
 import com.kmong.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +41,8 @@ public class ProductServiceImpl implements ProductService {
      * @return 상품 전체 리스트
      */
     @Override
-    public ResponseEntity findAll() {
-        List<Product> products = productRepository.findAll();
+    public ResponseEntity findAll(ProductSearch productSearch) {
+        List<Product> products = productRepository.findAll(productSearch);
         List<ProductView> productViews = products.stream().map(p -> p.toProductView()).collect(Collectors.toList());
         return new ResponseEntity(productViews, HttpStatus.OK);
     }
@@ -66,27 +69,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 상품명으로 상품 검색(like 검색)
-     * @param keyword 검색키워드
-     * @return 검색결과
+     * 상품 등록
+     * @param productCreate 등록할 상품정보
+     * @return 등록결과
      */
     @Override
-    public ResponseEntity<ProductView> findByProductName(String keyword) {
-        List<Product> productFindByProductName = productRepository.findByProductName(keyword);
-        List<ProductView> productViews = productFindByProductName.stream().map(p -> p.toProductView()).collect(Collectors.toList());
-        return new ResponseEntity(productViews, HttpStatus.OK);
-    }
-
-    /**
-     * 판매여부로 상품 검색
-     * @param salesYn 판매여부
-     * @return 검색결과
-     */
-    @Override
-    public ResponseEntity<ProductView> findBySalesYn(Boolean salesYn) {
-        List<Product> productFindBySalesYn = productRepository.findBySalesYn(salesYn);
-        List<ProductView> productViews = productFindBySalesYn.stream().map(p -> p.toProductView()).collect(Collectors.toList());
-        return new ResponseEntity(productViews, HttpStatus.OK);
+    public ResponseEntity createProduct(ProductCreate productCreate) {
+        Product product = productRepository.createProduct(productCreate.toProduct());
+        SingleResponse singleResponse = SingleResponse.builder()
+                                                    .code("201")
+                                                    .message("상품을 등록했습니다.")
+                                                    .object(product.toProductView()).build();
+        return new ResponseEntity(singleResponse, HttpStatus.CREATED);
     }
 
 }
