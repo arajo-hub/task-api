@@ -8,12 +8,14 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 public class MemberCreate {
 
+    @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9]*$", message = "아이디는 첫시작을 영어로, 구성은 영숫자로만 가능합니다.")
     @NotNull(message = "아이디는 필수항목입니다.")
     @Size(min = 1, max = 15, message = "아이디는 1자부터 15자까지 가능합니다.")
     private String id;

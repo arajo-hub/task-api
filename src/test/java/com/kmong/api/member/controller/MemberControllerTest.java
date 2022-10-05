@@ -87,7 +87,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "id");
+            assertEquals("id", key);
         });
     }
 
@@ -109,7 +109,73 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "id");
+            assertEquals("id", key);
+        });
+    }
+
+    @Test
+    @DisplayName("공백포함 아이디 회원가입 시도")
+    void joinIdWithWhitespace() throws Exception {
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("test 1234")
+                .email("test1234@kmong.co.kr")
+                .pwd("test1234")
+                .build();
+        MvcResult mvcResult = mockMvc.perform(post("/member/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberCreate)))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+
+        ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
+        Map<String, String> validation = response.getValidation();
+        validation.forEach((key, value) -> {
+            assertEquals("id", key);
+        });
+    }
+
+    @Test
+    @DisplayName("특수문자포함 아이디 회원가입 시도")
+    void joinIdWithSpecialCharacters() throws Exception {
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("test♀1234")
+                .email("test1234@kmong.co.kr")
+                .pwd("test1234")
+                .build();
+        MvcResult mvcResult = mockMvc.perform(post("/member/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberCreate)))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+
+        ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
+        Map<String, String> validation = response.getValidation();
+        validation.forEach((key, value) -> {
+            assertEquals("id", key);
+        });
+    }
+
+    @Test
+    @DisplayName("숫자로 시작하는 아이디 회원가입 시도")
+    void joinIdThatStartsNumber() throws Exception {
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("1test1234")
+                .email("test1234@kmong.co.kr")
+                .pwd("test1234")
+                .build();
+        MvcResult mvcResult = mockMvc.perform(post("/member/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberCreate)))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+
+        ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
+        Map<String, String> validation = response.getValidation();
+        validation.forEach((key, value) -> {
+            assertEquals("id", key);
         });
     }
 
@@ -130,7 +196,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "pwd");
+            assertEquals("pwd", key);
         });
     }
 
@@ -152,7 +218,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "pwd");
+            assertEquals("pwd", key);
         });
     }
 
@@ -173,7 +239,29 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "email");
+            assertEquals("email", key);
+        });
+    }
+
+    @Test
+    @DisplayName("띄어쓰기포함인 이메일로 회원가입 시도")
+    void joinEmailWithWhitespace() throws Exception {
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("test1234")
+                .email("test 1234@kmong.co.kr")
+                .pwd("test1234")
+                .build();
+        MvcResult mvcResult = mockMvc.perform(post("/member/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberCreate)))
+                .andExpect(status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+
+        ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
+        Map<String, String> validation = response.getValidation();
+        validation.forEach((key, value) -> {
+            assertEquals("email", key);
         });
     }
 
@@ -246,7 +334,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "id");
+            assertEquals("id", key);
         });
     }
 
@@ -267,7 +355,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "id");
+            assertEquals("id", key);
         });
     }
 
@@ -287,7 +375,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "pwd");
+            assertEquals("pwd", key);
         });
     }
 
@@ -308,7 +396,7 @@ public class MemberControllerTest {
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
         validation.forEach((key, value) -> {
-            assertEquals(key, "pwd");
+            assertEquals("pwd", key);
         });
     }
 
