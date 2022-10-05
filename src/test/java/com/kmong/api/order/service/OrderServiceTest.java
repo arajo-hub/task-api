@@ -78,11 +78,11 @@ public class OrderServiceTest {
     @DisplayName("주문 생성")
     void createOrder() {
         List<OrderedProduct> products = List.of(OrderedProduct.builder()
-                        .id(testProducts.get(0).getId())
+                        .productId(testProducts.get(0).getId())
                         .quantity(1)
                         .build(),
                 OrderedProduct.builder()
-                        .id(testProducts.get(1).getId())
+                        .productId(testProducts.get(1).getId())
                         .quantity(10)
                         .build());
         OrderCreate orderCreate = OrderCreate.builder().memberId(testMember.getId()).orderedProducts(products).build();
@@ -98,11 +98,11 @@ public class OrderServiceTest {
 
         for (int i = 0; i < tryTime; i++) {
             List<OrderedProduct> products = List.of(OrderedProduct.builder()
-                                                                    .id(testProducts.get(0).getId())
+                                                                    .productId(testProducts.get(0).getId())
                                                                     .quantity(1)
                                                                     .build(),
                                                     OrderedProduct.builder()
-                                                                    .id(testProducts.get(1).getId())
+                                                                    .productId(testProducts.get(1).getId())
                                                                     .quantity(10)
                                                                     .build());
             OrderCreate orderCreate = OrderCreate.builder()
@@ -118,7 +118,6 @@ public class OrderServiceTest {
 
         ResponseEntity result = orderService.findAllOrder(orderSearch);
         ListResponse savedOrders = (ListResponse) result.getBody();
-        System.out.println(savedOrders.toString());
         assertEquals(tryTime, savedOrders.getObjects().size());
     }
 
