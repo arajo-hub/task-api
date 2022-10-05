@@ -21,7 +21,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/list")
-    public ResponseEntity findAll(@RequestBody @Valid ProductSearch productSearch) {
+    public ResponseEntity findAll(@ModelAttribute ProductSearch productSearch) {
         return productService.findAll(productSearch);
     }
 
