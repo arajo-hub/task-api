@@ -2,14 +2,18 @@ package com.kmong.api.common.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-public class SingleResponse extends Response {
+@Setter
+@NoArgsConstructor
+public class SingleResponse<T> extends Response {
 
-    private Object object;
+    private T object;
 
     @Builder
-    public SingleResponse(String code, String message, Object object) {
+    public SingleResponse(String code, String message, T object) {
         super(code, message);
         this.object = object;
     }

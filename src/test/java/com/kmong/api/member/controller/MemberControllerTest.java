@@ -124,9 +124,9 @@ public class MemberControllerTest {
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberCreate)))
-                .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn();
+                        .andExpect(status().isBadRequest())
+                        .andDo(MockMvcResultHandlers.print())
+                        .andReturn();
 
         ValidationExceptionResponse response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ValidationExceptionResponse.class);
         Map<String, String> validation = response.getValidation();
