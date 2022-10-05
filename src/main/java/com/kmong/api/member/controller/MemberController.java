@@ -1,5 +1,6 @@
 package com.kmong.api.member.controller;
 
+import com.kmong.api.common.response.Response;
 import com.kmong.api.member.request.MemberCreate;
 import com.kmong.api.member.request.MemberSearch;
 import com.kmong.api.member.service.LoginService;
@@ -37,7 +38,7 @@ public class MemberController {
     @PostMapping("/member/logout")
     public ResponseEntity logout(HttpSession session) {
         session.invalidate();
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(new Response("200", "로그아웃에 성공했습니다."), HttpStatus.OK);
     }
 
 }

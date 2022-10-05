@@ -407,7 +407,8 @@ public class MemberControllerTest {
         session.setAttribute("id", "test1234");
         mockMvc.perform(post("/member/logout")
                 .session(session))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
         assertTrue(session.isInvalid());
     }
 
