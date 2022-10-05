@@ -118,4 +118,10 @@ public class ProductRepository {
         return product;
     }
 
+    public void decreaseQuantity(Long productId, int newQuantity) {
+        queryFactory.update(product)
+                    .set(product.quantity, newQuantity)
+                    .where(isEqualsToId(productId))
+                    .execute();
+    }
 }

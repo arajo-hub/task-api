@@ -2,7 +2,10 @@ package com.kmong.api.product.domain;
 
 import com.kmong.api.order.response.ImpossibleProductView;
 import com.kmong.api.product.response.ProductView;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -50,4 +53,5 @@ public class Product {
                                     .salesYn(salesYn)
                                     .build();
     }
+
 }
