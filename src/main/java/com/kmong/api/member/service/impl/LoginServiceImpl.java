@@ -1,8 +1,10 @@
 package com.kmong.api.member.service.impl;
 
 import com.kmong.api.config.encrypt.PwdEncryption;
-import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.domain.Member;
+import com.kmong.api.member.exception.MemberNotFoundException;
+import com.kmong.api.member.exception.WrongPasswordException;
+import com.kmong.api.member.repository.MemberRepository;
 import com.kmong.api.member.request.MemberSearch;
 import com.kmong.api.member.response.MemberView;
 import com.kmong.api.member.service.LoginService;
@@ -38,12 +40,10 @@ public class LoginServiceImpl implements LoginService {
                 httpSession.setAttribute("id", memberFindById.getId());
                 response = new ResponseEntity(memberFindById.toMemberView(), HttpStatus.OK);
             } else {
-                // 비밀번호가 다른 경우
-                response = new ResponseEntity(HttpStatus.BAD_REQUEST);
+                throw new WrongPasswordException();
             }
         } else {
-            // 찾는 멤버가 존재하지 않는 경우
-            response = new ResponseEntity(HttpStatus.NOT_FOUND);
+            throw new MemberNotFoundException();
         }
         return response;
     }

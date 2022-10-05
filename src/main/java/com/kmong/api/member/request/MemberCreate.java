@@ -6,12 +6,25 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Getter
 @Setter
 public class MemberCreate {
 
+    @NotNull(message = "아이디는 필수항목입니다.")
+    @Size(min = 1, max = 15, message = "아이디는 1자부터 15자까지 가능합니다.")
     private String id;
+
+    @NotNull(message = "이메일은 필수항목입니다.")
+    @Size(min = 1, message = "이메일을 입력해주세요.")
+    @Email(message = "잘못된 이메일 형식입니다.")
     private String email;
+
+    @NotNull(message = "비밀번호는 필수항목입니다.")
+    @Size(min = 1, max = 15, message = "비밀번호는 1자부터 15자까지 가능합니다.")
     private String pwd;
 
     @Builder
