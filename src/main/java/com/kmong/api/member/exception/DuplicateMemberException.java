@@ -14,4 +14,5 @@ public class DuplicateMemberException extends KmongApiException {
     public int getStatusCode() {
         return 409;
     }
+
 }
