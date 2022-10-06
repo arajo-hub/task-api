@@ -24,6 +24,7 @@ import javax.transaction.Transactional;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.kmong.api.common.constant.Constant.SESSION_ATTRIBUTE_MEMBER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -60,6 +61,7 @@ public class MemberControllerTest {
         mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberCreate)))
+                        .andDo(MockMvcResultHandlers.print())
                         .andExpect(status().isCreated());
 
         Optional<Member> memberFindById = memberRepository.findById(memberCreate.getMemberId());
@@ -403,11 +405,11 @@ public class MemberControllerTest {
     @DisplayName("로그아웃")
     void logout() throws Exception {
         MockHttpSession session = new MockHttpSession(null);
-        session.setAttribute("id", "test1234");
+        session.setAttribute(SESSION_ATTRIBUTE_MEMBER_ID, "test1234");
         mockMvc.perform(post("/member/logout")
                 .session(session))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
         assertTrue(session.isInvalid());
     }
 

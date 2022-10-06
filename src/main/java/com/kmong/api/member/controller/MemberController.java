@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import static com.kmong.api.common.constant.Constant.SESSION_ATTRIBUTE_MEMBER_ID;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class MemberController {
 
     @PostMapping("/member/join")
     public ResponseEntity join(HttpSession session, @RequestBody @Valid MemberCreate memberCreate) {
-        if (!ObjectUtils.isEmpty(session.getAttribute("id"))) {
+        if (!ObjectUtils.isEmpty(session.getAttribute(SESSION_ATTRIBUTE_MEMBER_ID))) {
             throw new AlreadyLoginException();
         }
         return memberService.join(memberCreate);
