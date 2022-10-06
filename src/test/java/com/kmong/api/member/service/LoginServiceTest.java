@@ -35,7 +35,7 @@ public class LoginServiceTest {
         Member member = Member.builder()
                                 .id("test1234")
                                 .email("test1234@naver.com")
-                                .pwd(PwdEncryption.encrypt("test1234"))
+                                .pwd(PwdEncryption.encrypt("Test@1234"))
                                 .sessionId("sessionId")
                                 .build();
         memberRepository.save(member);
@@ -43,7 +43,7 @@ public class LoginServiceTest {
         //when
         MemberSearch memberSearch = MemberSearch.builder()
                                                 .memberId("test1234")
-                                                .pwd("test1234")
+                                                .pwd("Test@1234")
                                                 .build();
         ResponseEntity response = loginService.login(new MockHttpSession(), memberSearch);
 
@@ -57,7 +57,7 @@ public class LoginServiceTest {
         assertThrows(MemberNotFoundException.class, () -> {
             MemberSearch memberSearch = MemberSearch.builder()
                     .memberId("test1234")
-                    .pwd("test1234")
+                    .pwd("Test@1234")
                     .build();
             loginService.login(new MockHttpSession(), memberSearch);
         });
@@ -70,7 +70,7 @@ public class LoginServiceTest {
             Member member = Member.builder()
                     .id("test1234")
                     .email("test1234@naver.com")
-                    .pwd("test1234")
+                    .pwd("Test@1234")
                     .sessionId("sessionId")
                     .build();
             memberRepository.save(member);

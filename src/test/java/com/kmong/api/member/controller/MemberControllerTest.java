@@ -55,7 +55,7 @@ public class MemberControllerTest {
         MemberCreate memberCreate = MemberCreate.builder()
                                                 .memberId("test1234")
                                                 .email("test1234@kmong.co.kr")
-                                                .pwd("test1234")
+                                                .pwd("Test@1234")
                                                 .build();
         mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +75,7 @@ public class MemberControllerTest {
     void joinWithoutId() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
                 .email("test1234@kmong.co.kr")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +97,7 @@ public class MemberControllerTest {
         MemberCreate memberCreate = MemberCreate.builder()
                 .memberId("test1234test1234test1234test1234")
                 .email("test1234@kmong.co.kr")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +119,7 @@ public class MemberControllerTest {
         MemberCreate memberCreate = MemberCreate.builder()
                 .memberId("test 1234")
                 .email("test1234@kmong.co.kr")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +141,7 @@ public class MemberControllerTest {
         MemberCreate memberCreate = MemberCreate.builder()
                 .memberId("test♀1234")
                 .email("test1234@kmong.co.kr")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -163,7 +163,7 @@ public class MemberControllerTest {
         MemberCreate memberCreate = MemberCreate.builder()
                 .memberId("1test1234")
                 .email("test1234@kmong.co.kr")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +206,7 @@ public class MemberControllerTest {
         MemberCreate memberCreate = MemberCreate.builder()
                 .memberId("test1234")
                 .email("test1234@kmong.co.kr")
-                .pwd("test1234test1234test1234test1234")
+                .pwd("Test@1234Test@1234Test@1234Test@1234Test@1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -227,7 +227,7 @@ public class MemberControllerTest {
     void joinWithoutEmail() throws Exception {
         MemberCreate memberCreate = MemberCreate.builder()
                 .memberId("test1234")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -249,7 +249,7 @@ public class MemberControllerTest {
         MemberCreate memberCreate = MemberCreate.builder()
                 .memberId("test1234")
                 .email("test 1234@kmong.co.kr")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .build();
         MvcResult mvcResult = mockMvc.perform(post("/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -268,7 +268,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("로그인")
     void login() throws Exception {
-        String pwd = "test1234";
+        String pwd = "Test@1234";
         Member member = Member.builder()
                                 .id("test1234")
                                 .email("test1234@naver.com")
@@ -287,7 +287,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("존재하지 않는 아이디로 로그인 시도")
     void loginNotExistsId() throws Exception {
-        MemberSearch memberSearch = MemberSearch.builder().memberId("test1234").pwd("test1234").build();
+        MemberSearch memberSearch = MemberSearch.builder().memberId("test1234").pwd("Test@1234").build();
 
         mockMvc.perform(post("/member/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -301,7 +301,7 @@ public class MemberControllerTest {
         Member member = Member.builder()
                 .id("test1234")
                 .email("test1234@naver.com")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .sessionId("sessionId")
                 .build();
         memberRepository.save(member);
@@ -322,7 +322,7 @@ public class MemberControllerTest {
     @DisplayName("아이디없이 로그인 시도")
     void loginWithoutId() throws Exception {
         MemberSearch memberSearch = MemberSearch.builder()
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .build();
 
         MvcResult mvcResult = mockMvc.perform(post("/member/login")
@@ -343,7 +343,7 @@ public class MemberControllerTest {
     void loginOversizeId() throws Exception {
         MemberSearch memberSearch = MemberSearch.builder()
                                                 .memberId("test1234test1234test1234test1234")
-                                                .pwd("test1234")
+                                                .pwd("Test@1234")
                                                 .build();
 
         MvcResult mvcResult = mockMvc.perform(post("/member/login")
@@ -384,7 +384,7 @@ public class MemberControllerTest {
     void loginOversizePwd() throws Exception {
         MemberSearch memberSearch = MemberSearch.builder()
                 .memberId("test1234")
-                .pwd("test1234test1234test1234test1234")
+                .pwd("Test@1234Test@1234Test@1234Test@1234Test@1234")
                 .build();
 
         MvcResult mvcResult = mockMvc.perform(post("/member/login")
