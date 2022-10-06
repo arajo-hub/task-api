@@ -62,24 +62,8 @@ public class OrderServiceImpl implements OrderService {
 
         // id들로 상품정보 가져오기
         List<Product> products = productService.findByIds(orderCreate.getOrderedProductIds());
-        List<OrderedProduct> notExists = getNotExistsProductsInOrderedProducts(orderCreate, products);
 
-        // 존재하지 않는 상품 요청했는지 확인 -> ProductNotFoundException
-        if (!CollectionUtils.isEmpty(notExists)) {
-            throw new ProductsNotFoundException(notExists);
-        }
-
-        List<ImpossibleProductView> wrongQuantityProducts = getImpossibleOrders(orderCreate, products);
-
-        if (!CollectionUtils.isEmpty(wrongQuantityProducts)) {
-            throw new ImpossibleOrderException(wrongQuantityProducts);
-        }
-
-        List<ImpossibleProductView> impossibleProducts = getImpossibleProducts(orderCreate, products);
-
-        if (!CollectionUtils.isEmpty(impossibleProducts)) {
-            throw new ImpossibleOrderException(impossibleProducts);
-        }
+        checkPossibleOrderOrNot(orderCreate, products);
 
         List<OrderProduct> orderProducts = new ArrayList<OrderProduct>();
         // 상품정보 -> 주문상품으로 변경
@@ -109,14 +93,43 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * 가능한 주문인지 확인한다.
+     * @param orderCreate 주문정보
+     * @param products DB 상품정보
+     * @return 가능한 주문인지 여부
+     */
+    private void checkPossibleOrderOrNot(OrderCreate orderCreate, List<Product> products) {
+        List<OrderedProduct> notExists = getNotExistsProductsInOrderedProducts(orderCreate, products);
+
+        if (!CollectionUtils.isEmpty(notExists)) {
+            throw new ProductsNotFoundException(notExists);
+        }
+
+        List<ImpossibleProductView> duplicateProducts = getDuplicateProductsInOrderedProducts(orderCreate, products);
+
+        if (!CollectionUtils.isEmpty(duplicateProducts)) {
+            throw new ImpossibleOrderException(duplicateProducts);
+        }
+
+        List<ImpossibleProductView> wrongQuantityProducts = getImpossibleOrders(orderCreate, products);
+
+        if (!CollectionUtils.isEmpty(wrongQuantityProducts)) {
+            throw new ImpossibleOrderException(wrongQuantityProducts);
+        }
+
+        List<ImpossibleProductView> impossibleProducts = getImpossibleProducts(orderCreate, products);
+
+        if (!CollectionUtils.isEmpty(impossibleProducts)) {
+            throw new ImpossibleOrderException(impossibleProducts);
+        }
+    }
+
+    /**
      * 상품 수량에서 주문한 수량만큼 감소시킨다.
      * @param orderCreate 주문정보
      * @param products DB 상품 리스트
      */
     public void decreaseQuantity(OrderCreate orderCreate, List<Product> products) {
-        List<OrderedProduct> impossibleProducts = new ArrayList<OrderedProduct>();
-
-        boolean isPossible = false;
         for (OrderedProduct orderedProduct : orderCreate.getOrderedProducts()) {
             for (Product product : products) {
                 if (product.getId().equals(orderedProduct.getProductId())) {
@@ -126,6 +139,36 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
+    }
+
+    /**
+     * 같은 상품아이디가 중복되어 주문 불가능인 상품정보 리스트를 반환한다.
+     * @param orderCreate 주문정보
+     * @param products DB 상품
+     * @return 주문 불가능인 상품정보 리스트
+     */
+    private List<ImpossibleProductView> getDuplicateProductsInOrderedProducts(OrderCreate orderCreate, List<Product> products) {
+        List<ImpossibleProductView> duplicateProducts = new ArrayList<ImpossibleProductView>();
+
+        List<OrderedProduct> orderedProducts = orderCreate.getOrderedProducts();
+        for (OrderedProduct standard : orderedProducts) {
+            boolean isDuplicate = false;
+            Product product = products.stream().filter(p -> p.getId().equals(standard.getProductId())).findFirst().get();
+            ImpossibleProductView impossibleProductView = product.toImpossibleProductView();
+            impossibleProductView.setQuantity(standard.getQuantity());
+            for (OrderedProduct compare : orderedProducts) {
+                if (orderedProducts.indexOf(compare) != orderedProducts.indexOf(standard)
+                        && compare.getProductId().equals(standard.getProductId())) {
+                    impossibleProductView.setReason("한 상품을 중복하여 주문할 수 없습니다.");
+                    isDuplicate = true;
+                }
+            }
+
+            if (isDuplicate) {
+                duplicateProducts.add(impossibleProductView);
+            }
+        }
+        return duplicateProducts;
     }
 
     /**
