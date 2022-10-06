@@ -69,6 +69,12 @@ public class OrderServiceImpl implements OrderService {
             throw new ProductsNotFoundException(notExists);
         }
 
+        List<ImpossibleProductView> wrongQuantityProducts = getImpossibleOrders(orderCreate, products);
+
+        if (!CollectionUtils.isEmpty(wrongQuantityProducts)) {
+            throw new ImpossibleOrderException(wrongQuantityProducts);
+        }
+
         List<ImpossibleProductView> impossibleProducts = getImpossibleProducts(orderCreate, products);
 
         if (!CollectionUtils.isEmpty(impossibleProducts)) {
@@ -123,7 +129,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 주문 불가능인 상품정보 리스트를 반환한다.
+     * 판매중이 아니거나 재고가 없어서 주문 불가능인 상품정보 리스트를 반환한다.
      * @param orderCreate 주문정보
      * @param products DB 상품
      * @return 주문 불가능인 상품정보 리스트
@@ -146,6 +152,36 @@ public class OrderServiceImpl implements OrderService {
                         && product.getQuantity() < orderedProduct.getQuantity()) {
                     if (StringUtils.isNullOrEmpty(impossibleProductView.getReason())) {
                         impossibleProductView.setReason("재고가 부족합니다.");
+                    }
+                    isPossible = false;
+                }
+            }
+
+            if (!isPossible) {
+                impossibleProducts.add(impossibleProductView);
+            }
+        }
+        return impossibleProducts;
+    }
+
+    /**
+     * 수량이 유효하지 않아 주문불가능인 주문상품정보 리스트를 반환한다.
+     * @param orderCreate 주문정보
+     * @param products DB 상품
+     * @return 주문 불가능인 상품정보 리스트
+     */
+    private List<ImpossibleProductView> getImpossibleOrders(OrderCreate orderCreate, List<Product> products) {
+        List<ImpossibleProductView> impossibleProducts = new ArrayList<ImpossibleProductView>();
+
+        for (Product product : products) {
+            boolean isPossible = true;
+            ImpossibleProductView impossibleProductView = product.toImpossibleProductView();
+            for (OrderedProduct orderedProduct : orderCreate.getOrderedProducts()) {
+                impossibleProductView.setQuantity(orderedProduct.getQuantity());
+                if (product.getId().equals(orderedProduct.getProductId())
+                        && 0 > orderedProduct.getQuantity()) {
+                    if (StringUtils.isNullOrEmpty(impossibleProductView.getReason())) {
+                        impossibleProductView.setReason("수량은 양수만 입력 가능합니다.");
                     }
                     isPossible = false;
                 }
