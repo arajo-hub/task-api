@@ -10,15 +10,15 @@ import java.util.List;
 @NoArgsConstructor
 public class ListResponse<T> extends Response{
 
-    private List<T> objects;
+    private List<T> datas;
 
     public ListResponse(String code, String message) {
         super(code, message);
     }
 
     @Builder
-    public ListResponse(String code, String message, List<T> objects) {
+    public ListResponse(String code, String message, List<T> datas) {
         super(code, message);
-        this.objects = objects;
+        this.datas = datas;
     }
 }

@@ -96,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
             Order order = orderCreate.toOrder(memberFindById.get(), orderProducts);
             orderRepository.createOrder(order);
             decreaseQuantity(orderCreate, products);
-            SingleResponse body = SingleResponse.builder().code("201").message("주문 완료했습니다.").object(order.toOrderView()).build();
+            SingleResponse body = SingleResponse.builder().code("201").message("주문 완료했습니다.").data(order.toOrderView()).build();
             response = new ResponseEntity(body, HttpStatus.CREATED);
         }
         return response;
@@ -201,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
             for (Order order : orders) {
                 orderViews.add(order.toOrderView());
             }
-            response.setObjects(orderViews);
+            response.setDatas(orderViews);
         }
         return new ResponseEntity(response, HttpStatus.OK);
     }

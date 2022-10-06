@@ -37,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
             SingleResponse body = SingleResponse.builder()
                                                 .code("201")
                                                 .message("회원가입되었습니다.")
-                                                .object(member.toMemberView())
+                                                .data(member.toMemberView())
                                                 .build();
             response = new ResponseEntity(body, HttpStatus.CREATED);
         }

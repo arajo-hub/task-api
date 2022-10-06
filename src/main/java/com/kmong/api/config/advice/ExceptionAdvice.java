@@ -38,7 +38,7 @@ public class ExceptionAdvice {
         if (e instanceof KmongNotFoundListException) {
             ListResponse body = new ListResponse(String.valueOf(statusCode), e.getMessage());
             KmongNotFoundListException listException = (KmongNotFoundListException) e;
-            body.setObjects(listException.getList());
+            body.setDatas(listException.getList());
             return ResponseEntity.status(statusCode).body(body);
         } else {
             return ResponseEntity.status(statusCode).body(new Response(String.valueOf(statusCode), e.getMessage()));
