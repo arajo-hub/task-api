@@ -42,7 +42,7 @@ public class Order {
         List<OrderProductView> orderProductViews = orderProducts.stream().map(orderProduct -> orderProduct.toOrderProductView()).collect(Collectors.toList());
         return OrderView.builder()
                         .orderId(id)
-                        .orderProductViews(orderProductViews)
+                        .orderProducts(orderProductViews)
                         .orderDatetime(orderDatetime)
                         .totalPrice(calculateTotalPrice())
                         .build();

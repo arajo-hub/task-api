@@ -143,7 +143,7 @@ public class OrderControllerTest {
 
         String jsonContent = result.getResponse().getContentAsString();
         SingleResponse<OrderView> orders = objectMapper.readValue(jsonContent, new TypeReference<SingleResponse<OrderView>>() {});
-        assertEquals(products.size(), orders.getData().getOrderProductViews().size());
+        assertEquals(products.size(), orders.getData().getOrderProducts().size());
     }
 
     @Test
