@@ -1,6 +1,7 @@
 package com.kmong.api.member.controller;
 
 import com.kmong.api.common.response.Response;
+import com.kmong.api.member.exception.AlreadyLoginException;
 import com.kmong.api.member.request.MemberCreate;
 import com.kmong.api.member.request.MemberSearch;
 import com.kmong.api.member.service.LoginService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +28,10 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/member/join")
-    public ResponseEntity join(@RequestBody @Valid MemberCreate memberCreate) {
+    public ResponseEntity join(HttpSession session, @RequestBody @Valid MemberCreate memberCreate) {
+        if (!ObjectUtils.isEmpty(session.getAttribute("id"))) {
+            throw new AlreadyLoginException();
+        }
         return memberService.join(memberCreate);
     }
 
