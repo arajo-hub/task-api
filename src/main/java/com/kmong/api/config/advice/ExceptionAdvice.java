@@ -35,7 +35,7 @@ public class ExceptionAdvice {
     public ResponseEntity kmongNotFoundException(KmongApiListException e) {
         int statusCode = e.getStatusCode();
         ListResponse body = new ListResponse(String.valueOf(statusCode), e.getMessage());
-        body.setObjects(e.getList());
+        body.setDatas(e.getList());
         return ResponseEntity.status(statusCode).body(body);
     }
 
