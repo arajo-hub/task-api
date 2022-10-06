@@ -31,14 +31,17 @@ public class MemberController {
 
     @PostMapping("/member/join")
     public ResponseEntity join(HttpSession session, @RequestBody @Valid MemberCreate memberCreate) {
-        if (!ObjectUtils.isEmpty(session.getAttribute(SESSION_ATTRIBUTE_MEMBER_ID))) {
-            throw new AlreadyLoginException();
+        if (isAlreadyLoggedIn(session)) {
+            throw new AlreadyLoginException("로그아웃 후 회원가입이 가능합니다.");
         }
         return memberService.join(memberCreate);
     }
 
     @PostMapping("/member/login")
     public ResponseEntity login(HttpSession session, @RequestBody @Valid MemberSearch memberSearch) {
+        if (isAlreadyLoggedIn(session)) {
+            throw new AlreadyLoginException("이미 로그인되어 있습니다.");
+        }
         return loginService.login(session, memberSearch);
     }
 
@@ -46,6 +49,10 @@ public class MemberController {
     public ResponseEntity logout(HttpSession session) {
         session.invalidate();
         return new ResponseEntity(new Response("200", "로그아웃에 성공했습니다."), HttpStatus.OK);
+    }
+
+    private boolean isAlreadyLoggedIn(HttpSession session) {
+        return !ObjectUtils.isEmpty(session.getAttribute(SESSION_ATTRIBUTE_MEMBER_ID));
     }
 
 }
