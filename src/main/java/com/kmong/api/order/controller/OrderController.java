@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import static com.kmong.api.common.constant.Constant.SESSION_ATTRIBUTE_MEMBER_ID;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class OrderController {
 
     @GetMapping("/order/list")
     public ResponseEntity findAllOrder(HttpSession session, @ModelAttribute OrderSearch orderSearch) {
-        if (!session.getAttribute("id").equals(orderSearch.getMemberId())) {
+        if (!session.getAttribute(SESSION_ATTRIBUTE_MEMBER_ID).equals(orderSearch.getMemberId())) {
             throw new InconsistentMemberException();
         }
         return orderService.findAllOrder(orderSearch);
