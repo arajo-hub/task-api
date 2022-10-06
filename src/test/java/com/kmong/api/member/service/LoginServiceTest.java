@@ -36,7 +36,6 @@ public class LoginServiceTest {
                                 .id("test1234")
                                 .email("test1234@naver.com")
                                 .pwd(PwdEncryption.encrypt("Test@1234"))
-                                .sessionId("sessionId")
                                 .build();
         memberRepository.save(member);
 
@@ -71,7 +70,6 @@ public class LoginServiceTest {
                     .id("test1234")
                     .email("test1234@naver.com")
                     .pwd("Test@1234")
-                    .sessionId("sessionId")
                     .build();
             memberRepository.save(member);
 

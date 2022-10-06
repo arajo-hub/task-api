@@ -20,15 +20,12 @@ public class Member {
     private String email;
     @Column
     private String pwd;
-    @Column
-    private String sessionId;
 
     @Builder
-    public Member(String id, String email, String pwd, String sessionId) {
+    public Member(String id, String email, String pwd) {
         this.id = id;
         this.email = email;
         this.pwd = pwd;
-        this.sessionId = sessionId;
     }
 
     public MemberView toMemberView() {
