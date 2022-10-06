@@ -1,8 +1,7 @@
 package com.kmong.api.config.advice;
 
 import com.kmong.api.common.exception.KmongApiException;
-import com.kmong.api.common.exception.KmongNotFoundException;
-import com.kmong.api.common.exception.KmongNotFoundListException;
+import com.kmong.api.common.exception.KmongApiListException;
 import com.kmong.api.common.response.ListResponse;
 import com.kmong.api.common.response.Response;
 import com.kmong.api.common.response.ValidationExceptionResponse;
@@ -32,17 +31,12 @@ public class ExceptionAdvice {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(KmongNotFoundException.class)
-    public ResponseEntity kmongNotFoundException(KmongNotFoundException e) {
+    @ExceptionHandler(KmongApiListException.class)
+    public ResponseEntity kmongNotFoundException(KmongApiListException e) {
         int statusCode = e.getStatusCode();
-        if (e instanceof KmongNotFoundListException) {
-            ListResponse body = new ListResponse(String.valueOf(statusCode), e.getMessage());
-            KmongNotFoundListException listException = (KmongNotFoundListException) e;
-            body.setObjects(listException.getList());
-            return ResponseEntity.status(statusCode).body(body);
-        } else {
-            return ResponseEntity.status(statusCode).body(new Response(String.valueOf(statusCode), e.getMessage()));
-        }
+        ListResponse body = new ListResponse(String.valueOf(statusCode), e.getMessage());
+        body.setObjects(e.getList());
+        return ResponseEntity.status(statusCode).body(body);
     }
 
     @ExceptionHandler(KmongApiException.class)
