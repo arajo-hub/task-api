@@ -10,12 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SingleResponse<T> extends Response {
 
-    private T object;
+    private T data;
 
     @Builder
-    public SingleResponse(String code, String message, T object) {
+    public SingleResponse(String code, String message, T data) {
         super(code, message);
-        this.object = object;
+        this.data = data;
     }
 
 }

@@ -114,7 +114,7 @@ public class ProductControllerTest {
         String jsonContent = result.getResponse().getContentAsString();
         ListResponse<ProductView> searchProducts = objectMapper.readValue(jsonContent, new TypeReference<ListResponse<ProductView>>() {});
 
-        assertEquals(products.stream().filter(p -> p.getProductName().contains(keyword)).count(), searchProducts.getObjects().size());
+        assertEquals(products.stream().filter(p -> p.getProductName().contains(keyword)).count(), searchProducts.getDatas().size());
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ProductControllerTest {
         String jsonContent = result.getResponse().getContentAsString();
         ListResponse<ProductView> searchProducts = objectMapper.readValue(jsonContent, new TypeReference<ListResponse<ProductView>>() {});
 
-        assertEquals(products.stream().filter(p -> p.isSalesYn() == Boolean.TRUE).count(), searchProducts.getObjects().size());
+        assertEquals(products.stream().filter(p -> p.isSalesYn() == Boolean.TRUE).count(), searchProducts.getDatas().size());
     }
 
     @Test

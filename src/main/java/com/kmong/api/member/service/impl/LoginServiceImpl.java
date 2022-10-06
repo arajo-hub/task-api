@@ -42,7 +42,7 @@ public class LoginServiceImpl implements LoginService {
                 SingleResponse body = SingleResponse.builder()
                                                     .code("200")
                                                     .message("로그인되었습니다.")
-                                                    .object(memberFindById.toMemberView())
+                                                    .data(memberFindById.toMemberView())
                                                     .build();
                 response = new ResponseEntity(body, HttpStatus.OK);
             } else {

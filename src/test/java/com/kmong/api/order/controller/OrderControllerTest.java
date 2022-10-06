@@ -76,7 +76,7 @@ public class OrderControllerTest {
         testMember = Member.builder()
                 .id("test1234")
                 .email("test1234@naver.com")
-                .pwd("test1234")
+                .pwd("Test@1234")
                 .sessionId("sessionId")
                 .build();
         memberRepository.save(testMember);
@@ -144,7 +144,7 @@ public class OrderControllerTest {
 
         String jsonContent = result.getResponse().getContentAsString();
         SingleResponse<OrderView> orders = objectMapper.readValue(jsonContent, new TypeReference<SingleResponse<OrderView>>() {});
-        assertEquals(products.size(), orders.getObject().getOrderProductViews().size());
+        assertEquals(products.size(), orders.getData().getOrderProductViews().size());
     }
 
     @Test
@@ -191,7 +191,7 @@ public class OrderControllerTest {
 
         String jsonContent = result.getResponse().getContentAsString();
         ListResponse<OrderView> orders = objectMapper.readValue(jsonContent, new TypeReference<ListResponse<OrderView>>() {});
-        assertEquals(tryTime, orders.getObjects().size());
+        assertEquals(tryTime, orders.getDatas().size());
     }
 
 }
