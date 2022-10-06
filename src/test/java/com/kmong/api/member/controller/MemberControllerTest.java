@@ -273,7 +273,7 @@ public class MemberControllerTest {
                                 .id("test1234")
                                 .email("test1234@naver.com")
                                 .pwd(PwdEncryption.encrypt(pwd))
-                                .sessionId("sessionId").build();
+                                .build();
         memberRepository.save(member);
 
         MemberSearch memberSearch = MemberSearch.builder().memberId(member.getId()).pwd(pwd).build();
@@ -302,7 +302,6 @@ public class MemberControllerTest {
                 .id("test1234")
                 .email("test1234@naver.com")
                 .pwd("Test@1234")
-                .sessionId("sessionId")
                 .build();
         memberRepository.save(member);
 

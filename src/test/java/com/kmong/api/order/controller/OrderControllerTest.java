@@ -77,7 +77,6 @@ public class OrderControllerTest {
                 .id("test1234")
                 .email("test1234@naver.com")
                 .pwd("Test@1234")
-                .sessionId("sessionId")
                 .build();
         memberRepository.save(testMember);
 
