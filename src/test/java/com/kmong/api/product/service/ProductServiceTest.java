@@ -94,7 +94,7 @@ public class ProductServiceTest {
         ResponseEntity response = productService.findAll(productSearch);
         ListResponse<ProductView> searchResult = (ListResponse<ProductView>) response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, searchResult.getObjects().size());
+        assertEquals(2, searchResult.getDatas().size());
     }
 
     @Test
@@ -128,7 +128,7 @@ public class ProductServiceTest {
         ResponseEntity response = productService.findAll(productSearch);
         ListResponse searchResult = (ListResponse) response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, searchResult.getObjects().size());
+        assertEquals(1, searchResult.getDatas().size());
     }
 
     @Test
@@ -143,7 +143,7 @@ public class ProductServiceTest {
         ResponseEntity response = productService.createProduct(productCreate);
         SingleResponse searchedProduct = (SingleResponse) response.getBody();
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertTrue(!ObjectUtils.isEmpty(searchedProduct.getObject()));
+        assertTrue(!ObjectUtils.isEmpty(searchedProduct.getData()));
     }
 
 }

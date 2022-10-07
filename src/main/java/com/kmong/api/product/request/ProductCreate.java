@@ -23,7 +23,7 @@ public class ProductCreate {
     @Min(value = 0, message = "가격은 0부터 입력 가능합니다.")
     private Integer price;
 
-    @NotNull
+    @NotNull(message = "판매여부는 필수항목입니다.")
     private Boolean salesYn;
 
     @Builder

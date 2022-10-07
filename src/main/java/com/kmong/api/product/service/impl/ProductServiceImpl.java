@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
                                         .code("200")
                                         .message("상품이 조회되었습니다.")
                                         .build();
-        body.setObjects(productViews);
+        body.setDatas(productViews);
         return new ResponseEntity(body, HttpStatus.OK);
     }
 
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         SingleResponse singleResponse = SingleResponse.builder()
                                                     .code("201")
                                                     .message("상품을 등록했습니다.")
-                                                    .object(product.toProductView()).build();
+                                                    .data(product.toProductView()).build();
         return new ResponseEntity(singleResponse, HttpStatus.CREATED);
     }
 

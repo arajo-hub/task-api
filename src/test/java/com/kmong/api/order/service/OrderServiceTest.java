@@ -47,8 +47,7 @@ public class OrderServiceTest {
         testMember = Member.builder()
                 .id("test1234")
                 .email("test1234@naver.com")
-                .pwd("test1234")
-                .sessionId("sessionId")
+                .pwd("Test@1234")
                 .build();
         memberRepository.save(testMember);
 
@@ -118,7 +117,7 @@ public class OrderServiceTest {
 
         ResponseEntity result = orderService.findAllOrder(orderSearch);
         ListResponse savedOrders = (ListResponse) result.getBody();
-        assertEquals(tryTime, savedOrders.getObjects().size());
+        assertEquals(tryTime, savedOrders.getDatas().size());
     }
 
 }

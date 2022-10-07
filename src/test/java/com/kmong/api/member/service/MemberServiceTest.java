@@ -28,7 +28,7 @@ public class MemberServiceTest {
         MemberCreate memberCreate = MemberCreate.builder()
                                                 .memberId("test1234")
                                                 .email("test1234@kmong.co.kr")
-                                                .pwd("test1234")
+                                                .pwd("Test@1234")
                                                 .build();
         ResponseEntity response = memberService.join(memberCreate);
 
