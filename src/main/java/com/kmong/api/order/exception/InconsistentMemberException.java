@@ -4,7 +4,7 @@ import com.kmong.api.common.exception.KmongApiException;
 
 public class InconsistentMemberException extends KmongApiException {
 
-    private static final String MESSAGE = "조회권한이 없습니다.";
+    private static final String MESSAGE = "권한이 없습니다.";
 
     public InconsistentMemberException() {
         super(MESSAGE);
