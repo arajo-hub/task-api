@@ -22,16 +22,23 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/order/create")
-    public ResponseEntity createOrder(@RequestBody @Valid OrderCreate orderCreate) {
+    public ResponseEntity createOrder(HttpSession session, @RequestBody @Valid OrderCreate orderCreate) {
+        if (!isSameMember(session, orderCreate.getMemberId())) {
+            throw new InconsistentMemberException();
+        }
         return orderService.createOrder(orderCreate);
     }
 
     @GetMapping("/order/list")
     public ResponseEntity findAllOrder(HttpSession session, @ModelAttribute OrderSearch orderSearch) {
-        if (!session.getAttribute(SESSION_ATTRIBUTE_MEMBER_ID).equals(orderSearch.getMemberId())) {
+        if (!isSameMember(session, orderSearch.getMemberId())) {
             throw new InconsistentMemberException();
         }
         return orderService.findAllOrder(orderSearch);
+    }
+
+    private boolean isSameMember(HttpSession session, String memberId) {
+        return session.getAttribute(SESSION_ATTRIBUTE_MEMBER_ID).equals(memberId);
     }
 
 }
